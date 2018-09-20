@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import styled, { keyframes } from 'styled-components'
+import VolumeMeter from '../VolumeMeter'
 
 const AppWrapper = styled.div`
   text-align: center;
@@ -41,10 +42,6 @@ const AppIntro = styled.p`
   }
 `
 
-const EmojiWrapper = styled.span.attrs({
-  role: 'img'
-})
-
 class App extends Component {
   render() {
     return (
@@ -57,8 +54,9 @@ class App extends Component {
           Bootstrapped with <code>create-react-app</code>.
         </AppIntro>
         <AppIntro>
-          Components styled with <code>styled-components</code> <EmojiWrapper aria-label="nail polish" />
+          Components styled with <code>styled-components</code>
         </AppIntro>
+        <VolumeMeter />
       </AppWrapper>
     )
   }
