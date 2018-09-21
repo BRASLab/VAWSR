@@ -59,18 +59,18 @@ class VolumeMeter extends React.Component {
     document.addEventListener('mousemove', this.handleMouseMove, true)
     document.addEventListener('mouseup', this.handleMouseUp, true)
     this.setState({
-      threshold: (event.clientX / this.node.clientWidth) * 100
+      threshold: ((event.clientX - this.node.offsetLeft) / this.node.clientWidth) * 100
     })
   }
   handleMouseMove = event => {
     this.setState({
-      threshold: (event.clientX / this.node.clientWidth) * 100
+      threshold: ((event.clientX - this.node.offsetLeft) / this.node.clientWidth) * 100
     })
   }
   handleMouseUp = event => {
     document.removeEventListener('mousemove', this.handleMouseMove, true)
     document.removeEventListener('mouseup', this.handleMouseUp, true)
-    let threshold = (event.clientX / this.node.clientWidth) * 100
+    let threshold = ((event.clientX - this.node.offsetLeft) / this.node.clientWidth) * 100
     this.setState({
       threshold: threshold
     })

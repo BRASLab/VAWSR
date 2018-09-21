@@ -1,61 +1,24 @@
 import React, { Component } from 'react'
-import styled, { keyframes } from 'styled-components'
+import styled from 'styled-components'
 import VolumeMeter from '../VolumeMeter'
 
 const AppWrapper = styled.div`
   text-align: center;
+  margin: 0px auto;
+  width: 80%;
 `
-
-const rotate360 = keyframes`
-  from {
-    transform: rotate(0deg);
-
-    } 
-  to {
-    transform: rotate(360deg);
-  }
-`
-
-const AppLogo = styled.img`
-  animation: ${rotate360} infinite 120s linear;
-  height: 80px;
-  &:hover {
-    animation: ${rotate360} infinite 1.5s linear;
-  }
-`
-
-const AppHeader = styled.div`
-  background-color: #222;
-  height: 12rem;
-  padding: 1rem;
-  color: white;
-`
-
-const AppTitle = styled.h1`
-  font-weight: 900;
-`
-
-const AppIntro = styled.p`
-  font-size: large;
-  code {
-    font-size: 1.3rem;
-  }
+const AppTextArea = styled.div`
+  width: 100%;
+  height: 400px;
+  border-radius: 10px;
+  background: #eee;
 `
 
 class App extends Component {
   render() {
     return (
       <AppWrapper>
-        <AppHeader>
-          <AppLogo src="https://mino.tw/signature/image.png" alt="logo" />
-          <AppTitle>Welcome to React</AppTitle>
-        </AppHeader>
-        <AppIntro>
-          Bootstrapped with <code>create-react-app</code>.
-        </AppIntro>
-        <AppIntro>
-          Components styled with <code>styled-components</code>
-        </AppIntro>
+        <AppTextArea />
         <VolumeMeter />
       </AppWrapper>
     )
