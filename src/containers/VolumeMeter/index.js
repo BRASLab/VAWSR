@@ -55,22 +55,36 @@ class VolumeMeter extends React.Component {
       volume: Number(percentage.toFixed(2))
     })
   }
-  handleMouse = event => {
+  handleMouse = () => {
     document.addEventListener('mousemove', this.handleMouseMove, true)
     document.addEventListener('mouseup', this.handleMouseUp, true)
-    this.setState({
-      threshold: ((event.clientX - this.node.offsetLeft) / this.node.clientWidth) * 100
-    })
   }
   handleMouseMove = event => {
+    let threshold
+    if (event.clientX < this.node.offsetLeft) {
+      threshold = 0
+    } else if (event.clientX > this.node.offsetWidth + this.node.offsetLeft) {
+      threshold = (this.node.offsetWidth / this.node.clientWidth) * 100
+    } else {
+      threshold = ((event.clientX - this.node.offsetLeft) / this.node.clientWidth) * 100
+    }
+
     this.setState({
-      threshold: ((event.clientX - this.node.offsetLeft) / this.node.clientWidth) * 100
+      threshold: threshold
     })
   }
   handleMouseUp = event => {
     document.removeEventListener('mousemove', this.handleMouseMove, true)
     document.removeEventListener('mouseup', this.handleMouseUp, true)
-    let threshold = ((event.clientX - this.node.offsetLeft) / this.node.clientWidth) * 100
+    let threshold
+    if (event.clientX < this.node.offsetLeft) {
+      threshold = 0
+    } else if (event.clientX > this.node.offsetWidth + this.node.offsetLeft) {
+      threshold = (this.node.offsetWidth / this.node.clientWidth) * 100
+    } else {
+      threshold = ((event.clientX - this.node.offsetLeft) / this.node.clientWidth) * 100
+    }
+
     this.setState({
       threshold: threshold
     })
