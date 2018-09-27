@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import VolumeMeter from '../VolumeMeter'
+import MenuAppBar from '../MenuAppBar'
 
 const AppWrapper = styled.div`
   text-align: center;
@@ -18,6 +19,7 @@ class App extends Component {
   render() {
     return (
       <AppWrapper>
+        <MenuAppBar />
         <AppTextArea />
         <VolumeMeter />
       </AppWrapper>

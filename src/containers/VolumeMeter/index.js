@@ -1,5 +1,4 @@
 import React from 'react'
-
 import Meter from '../../components/Meter'
 import Cookies from 'universal-cookie'
 
