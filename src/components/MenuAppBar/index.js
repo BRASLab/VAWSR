@@ -11,8 +11,9 @@ import Menu from '@material-ui/core/Menu'
 import Input from '@material-ui/core/Input'
 import MenuIcon from '@material-ui/icons/Menu'
 import SearchIcon from '@material-ui/icons/Search'
-import Button from '@material-ui/core/Button'
 import AccountCircle from '@material-ui/icons/AccountCircle'
+import { connect } from 'react-redux'
+import { login } from '../../actions'
 
 import RegisterSpeaker from './RegisterSpeaker'
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
@@ -93,6 +94,7 @@ class MenuAppBar extends React.Component {
   handleLogin = res => {
     console.log(res)
     this.setState({ login: true, anchorEl: null })
+    this.props.dispatch(login(res))
   }
 
   render() {
@@ -145,7 +147,7 @@ class MenuAppBar extends React.Component {
                   appId="332358063993706"
                   fields="name,email,picture"
                   callback={this.handleLogin}
-                  render={renderProps => <Button onClick={renderProps.onClick}>Facebook Login</Button>}
+                  render={renderProps => <MenuItem onClick={renderProps.onClick}>Facebook Login</MenuItem>}
                 />
                 <MenuItem onClick={this.handleClose}>Profile</MenuItem>
                 <RegisterSpeaker callback={this.handleClose} />
@@ -159,7 +161,8 @@ class MenuAppBar extends React.Component {
 }
 
 MenuAppBar.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  dispatch: PropTypes.func
 }
 
-export default withStyles(styles)(MenuAppBar)
+export default connect()(withStyles(styles)(MenuAppBar))

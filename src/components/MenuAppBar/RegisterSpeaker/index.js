@@ -8,6 +8,7 @@ import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import PlayArrow from '@material-ui/icons/PlayArrow'
 import { withStyles } from '@material-ui/core/styles'
+import MenuItem from '@material-ui/core/MenuItem'
 
 import Record from '../../Record'
 
@@ -78,7 +79,7 @@ class RegisterDialog extends React.Component {
     const { classes } = this.props
     return (
       <div>
-        <Button onClick={this.handleClickOpen}>語者設定</Button>
+        <MenuItem onClick={this.handleClickOpen}>語者設定</MenuItem>
         <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="responsive-dialog-title">
           <DialogTitle id="responsive-dialog-title">{'請朗讀下列文字進行語者註冊'}</DialogTitle>
           <DialogContent>
