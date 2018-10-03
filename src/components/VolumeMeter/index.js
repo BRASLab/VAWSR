@@ -1,11 +1,13 @@
 import React from 'react'
-
-import Meter from '../../components/Meter'
+import Meter from './Meter'
 import Cookies from 'universal-cookie'
+import { connect } from 'react-redux'
+import { updateThreshold } from '../../actions'
+import PropTypes from 'prop-types'
 
 class VolumeMeter extends React.Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     window.AudioContext = window.AudioContext || window.webkitAudioContext
     this.state = {
       audioContext: new AudioContext(),
@@ -88,6 +90,7 @@ class VolumeMeter extends React.Component {
     this.setState({
       threshold: threshold
     })
+    this.props.dispatch(updateThreshold(threshold))
     this.cookie.set('threshold', threshold)
   }
 
@@ -101,4 +104,8 @@ class VolumeMeter extends React.Component {
   }
 }
 
-export default VolumeMeter
+VolumeMeter.propTypes = {
+  dispatch: PropTypes.func
+}
+
+export default connect()(VolumeMeter)
