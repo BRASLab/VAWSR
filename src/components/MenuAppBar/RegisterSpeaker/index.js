@@ -2,13 +2,19 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'
-import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import PlayArrow from '@material-ui/icons/PlayArrow'
 import { withStyles } from '@material-ui/core/styles'
 import MenuItem from '@material-ui/core/MenuItem'
+import AppBar from '@material-ui/core/AppBar'
+import Toolbar from '@material-ui/core/Toolbar'
+import IconButton from '@material-ui/core/IconButton'
+import Typography from '@material-ui/core/Typography'
+import CloseIcon from '@material-ui/icons/Close'
+import Slide from '@material-ui/core/Slide'
+import axios from 'axios'
 
 import Record from '../../Record'
 
@@ -16,8 +22,18 @@ const styles = theme => ({
   button: {
     margin: theme.spacing.unit,
     float: 'right'
+  },
+  appBar: {
+    position: 'relative'
+  },
+  flex: {
+    flex: 1
   }
 })
+
+function Transition(props) {
+  return <Slide direction="up" {...props} />
+}
 
 class RegisterDialog extends React.Component {
   state = {
@@ -27,11 +43,9 @@ class RegisterDialog extends React.Component {
     audio: [],
     step: 0
   }
-  componentDidMount = () => {
-    this.generateSentences()
-  }
 
   handleClickOpen = () => {
+    this.generateSentences()
     this.setState({ open: true })
   }
 
@@ -51,13 +65,28 @@ class RegisterDialog extends React.Component {
     if (this.state.step < 2) {
       this.setState(prevState => ({ step: prevState.step + 1 }))
     } else {
-      this.handleClose()
+      var fd = new FormData()
+      // eslint-disable-next-line
+      for(let i = 0; i<2; i++){
+        fd.append(`file${i + 1}`, this.state.audioBlob[i], `file${i + 1}.wav`)
+      }
+
+      fetch({
+        url: 'http://140.125.45.147:8000/registerspeaker',
+        method: 'POST',
+        body: fd
+      })
+        .then(res => res.json())
+        .then(({ success }) => {
+          if (success) this.handleClose()
+        })
     }
   }
 
   handleURL = blob => {
     let obj = {}
     obj[this.state.step] = blob
+
     this.setState(prevState => ({ audioBlob: Object.assign({}, prevState.audioBlob, obj) }))
   }
 
@@ -68,11 +97,13 @@ class RegisterDialog extends React.Component {
   }
 
   generateSentences = () => {
-    fetch('http://140.125.45.147:8000/sentences.json')
-      .then(res => res.json())
+    axios
+      .get('http://140.125.45.147:8000/sentences.json')
+      .then(res => res.data)
       .then(({ sentences }) => {
         this.setState({ sentences: sentences })
       })
+      .catch(err => console.log(err))
   }
 
   render() {
@@ -80,7 +111,23 @@ class RegisterDialog extends React.Component {
     return (
       <div>
         <MenuItem onClick={this.handleClickOpen}>語者設定</MenuItem>
-        <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="responsive-dialog-title">
+        <Dialog fullScreen open={this.state.open} onClose={this.handleClose} TransitionComponent={Transition}>
+          <AppBar className={classes.appBar}>
+            <Toolbar>
+              <IconButton color="inherit" onClick={this.handleClose} aria-label="Close">
+                <CloseIcon />
+              </IconButton>
+              <Typography variant="title" color="inherit" className={classes.flex}>
+                語者設定
+              </Typography>
+              <Button onClick={this.handleBack} color="inherit">
+                Back
+              </Button>
+              <Button onClick={this.handleNext} color="inherit" autoFocus disabled={!this.state.audioBlob[this.state.step]}>
+                {this.state.step === 2 ? 'Finish' : 'Next'}
+              </Button>
+            </Toolbar>
+          </AppBar>
           <DialogTitle id="responsive-dialog-title">{'請朗讀下列文字進行語者註冊'}</DialogTitle>
           <DialogContent>
             <DialogContentText>{this.state.sentences[this.state.step]}</DialogContentText>
@@ -96,14 +143,6 @@ class RegisterDialog extends React.Component {
               <PlayArrow />
             </Button>
           </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleBack} color="primary">
-              Back
-            </Button>
-            <Button onClick={this.handleNext} color="primary" autoFocus>
-              {this.state.step === 2 ? 'Finish' : 'Next'}
-            </Button>
-          </DialogActions>
         </Dialog>
       </div>
     )

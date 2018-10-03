@@ -1,19 +1,18 @@
-const FacebookLoginManager = (state = {}, action) => {
+const LoginManager = (state = { login: false }, action) => {
   switch (action.type) {
     case 'LOGIN':
       return {
-        id: action.id,
+        fbid: action.fbid,
         email: action.email,
-        token: action.token,
         name: action.name,
-        url: action.url
+        login: true
       }
     case 'LOGOUT':
-      return {}
+      return { login: false }
 
     default:
       return state
   }
 }
 
-export default FacebookLoginManager
+export default LoginManager

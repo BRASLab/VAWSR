@@ -13,10 +13,13 @@ import MenuIcon from '@material-ui/icons/Menu'
 import SearchIcon from '@material-ui/icons/Search'
 import AccountCircle from '@material-ui/icons/AccountCircle'
 import { connect } from 'react-redux'
-import { login } from '../../actions'
+import axios from 'axios'
 
+import { login, logout } from '../../actions'
 import RegisterSpeaker from './RegisterSpeaker'
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
+
+axios.defaults.withCredentials = true
 
 const styles = theme => ({
   root: {
@@ -76,9 +79,22 @@ class MenuAppBar extends React.Component {
   state = {
     anchorEl: null,
     showSetting: null,
-    login: false
+    login: this.props.login,
+    user: this.props.user
   }
-
+  constructor(props) {
+    super(props)
+    axios
+      .get('http://140.125.45.147:8000/auth')
+      .then(res => res.data)
+      .then(data => {
+        if (data.login) {
+          this.props.dispatch(login(data))
+          console.log('Login success')
+        }
+      })
+      .catch(() => console.log('Not login'))
+  }
   handleChange = event => {
     this.setState({ auth: event.target.checked })
   }
@@ -90,11 +106,27 @@ class MenuAppBar extends React.Component {
   handleClose = () => {
     this.setState({ anchorEl: null })
   }
-
+  handleLogout = () => {
+    this.handleClose()
+    axios.get('http://140.125.45.147:8000/logout')
+    this.props.dispatch(logout())
+  }
   handleLogin = res => {
-    console.log(res)
-    this.setState({ login: true, anchorEl: null })
+    this.handleClose()
     this.props.dispatch(login(res))
+    axios
+      .post(
+        'http://140.125.45.147:8000/login',
+        { email: res.email, name: res.name, token: res.accessToken, signed: res.signedRequest, fbid: Number(res.id) },
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
+        }
+      )
+      .then(res => res.data)
+      .then(() => console.log('Login success'))
+      .catch(err => console.log(err))
   }
 
   render() {
@@ -110,7 +142,7 @@ class MenuAppBar extends React.Component {
               <MenuIcon />
             </IconButton>
             <Typography variant="title" color="inherit" className={classes.grow}>
-              TalkToText
+              具語者辨識之語音助理
             </Typography>
             <div className={classes.search}>
               <div className={classes.searchIcon}>
@@ -143,14 +175,16 @@ class MenuAppBar extends React.Component {
                 open={open}
                 onClose={this.handleClose}
               >
-                <FacebookLogin
-                  appId="332358063993706"
-                  fields="name,email,picture"
-                  callback={this.handleLogin}
-                  render={renderProps => <MenuItem onClick={renderProps.onClick}>Facebook Login</MenuItem>}
-                />
-                <MenuItem onClick={this.handleClose}>Profile</MenuItem>
-                <RegisterSpeaker callback={this.handleClose} />
+                {!this.props.login && (
+                  <FacebookLogin
+                    appId="332358063993706"
+                    fields="name,email,picture"
+                    callback={this.handleLogin}
+                    render={renderProps => <MenuItem onClick={renderProps.onClick}>Facebook Login</MenuItem>}
+                  />
+                )}
+                {this.props.login && <MenuItem onClick={this.handleLogout}>Logout</MenuItem>}
+                {this.props.login && <RegisterSpeaker callback={this.handleClose} />}
               </Menu>
             </div>
           </Toolbar>
@@ -162,7 +196,16 @@ class MenuAppBar extends React.Component {
 
 MenuAppBar.propTypes = {
   classes: PropTypes.object.isRequired,
-  dispatch: PropTypes.func
+  dispatch: PropTypes.func,
+  login: PropTypes.bool.isRequired,
+  user: PropTypes.object.isRequired
 }
 
-export default connect()(withStyles(styles)(MenuAppBar))
+const mapStateToProps = state => {
+  return {
+    login: state.LoginManager.login,
+    user: state.LoginManager
+  }
+}
+
+export default connect(mapStateToProps)(withStyles(styles)(MenuAppBar))

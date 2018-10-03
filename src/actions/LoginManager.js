@@ -1,10 +1,14 @@
 export const login = user => {
   return {
     type: 'LOGIN',
-    id: user.id,
+    fbid: user.fbid,
     email: user.email,
-    name: user.name,
-    url: user.picture.data.url,
-    token: user.accessToken
+    name: user.name
+  }
+}
+
+export const logout = () => {
+  return {
+    type: 'LOGOUT'
   }
 }
