@@ -5,7 +5,8 @@ const LoginManager = (state = { login: false }, action) => {
         fbid: action.fbid,
         email: action.email,
         name: action.name,
-        login: true
+        login: true,
+        hasivector: action.hasivector
       }
     case 'LOGOUT':
       return { login: false }

@@ -113,7 +113,6 @@ class MenuAppBar extends React.Component {
   }
   handleLogin = res => {
     this.handleClose()
-    this.props.dispatch(login(res))
     axios
       .post(
         'http://140.125.45.147:8000/login',
@@ -125,7 +124,10 @@ class MenuAppBar extends React.Component {
         }
       )
       .then(res => res.data)
-      .then(() => console.log('Login success'))
+      .then(data => {
+        this.props.dispatch(login(data))
+        console.log('Login success')
+      })
       .catch(err => console.log(err))
   }
 
@@ -157,36 +159,38 @@ class MenuAppBar extends React.Component {
                 }}
               />
             </div>
-            <div>
-              <IconButton aria-owns={open ? 'menu-appbar' : null} aria-haspopup="true" onClick={this.handleMenu} color="inherit">
-                <AccountCircle />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right'
-                }}
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right'
-                }}
-                open={open}
-                onClose={this.handleClose}
-              >
-                {!this.props.login && (
-                  <FacebookLogin
-                    appId="332358063993706"
-                    fields="name,email,picture"
-                    callback={this.handleLogin}
-                    render={renderProps => <MenuItem onClick={renderProps.onClick}>Facebook Login</MenuItem>}
-                  />
-                )}
-                {this.props.login && <MenuItem onClick={this.handleLogout}>Logout</MenuItem>}
-                {this.props.login && <RegisterSpeaker callback={this.handleClose} />}
-              </Menu>
-            </div>
+            {this.props.stream && (
+              <div>
+                <IconButton aria-owns={open ? 'menu-appbar' : null} aria-haspopup="true" onClick={this.handleMenu} color="inherit">
+                  <AccountCircle />
+                </IconButton>
+                <Menu
+                  id="menu-appbar"
+                  anchorEl={anchorEl}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right'
+                  }}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right'
+                  }}
+                  open={open}
+                  onClose={this.handleClose}
+                >
+                  {!this.props.login && (
+                    <FacebookLogin
+                      appId="332358063993706"
+                      fields="name,email,picture"
+                      callback={this.handleLogin}
+                      render={renderProps => <MenuItem onClick={renderProps.onClick}>Facebook Login</MenuItem>}
+                    />
+                  )}
+                  {this.props.login && <MenuItem onClick={this.handleLogout}>Logout</MenuItem>}
+                  {this.props.login && <RegisterSpeaker callback={this.handleClose} />}
+                </Menu>
+              </div>
+            )}
           </Toolbar>
         </AppBar>
       </div>
@@ -198,13 +202,15 @@ MenuAppBar.propTypes = {
   classes: PropTypes.object.isRequired,
   dispatch: PropTypes.func,
   login: PropTypes.bool.isRequired,
-  user: PropTypes.object.isRequired
+  user: PropTypes.object.isRequired,
+  stream: PropTypes.object
 }
 
 const mapStateToProps = state => {
   return {
     login: state.LoginManager.login,
-    user: state.LoginManager
+    user: state.LoginManager,
+    stream: state.Recorder.stream
   }
 }
 

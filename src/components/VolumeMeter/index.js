@@ -2,8 +2,8 @@ import React from 'react'
 import Meter from './Meter'
 import Cookies from 'universal-cookie'
 import { connect } from 'react-redux'
-import { updateThreshold } from '../../actions'
 import PropTypes from 'prop-types'
+import { startRecord, updateStream } from '../../actions/Recorder'
 
 class VolumeMeter extends React.Component {
   constructor(props) {
@@ -20,6 +20,7 @@ class VolumeMeter extends React.Component {
 
   componentDidMount() {
     navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+      this.props.dispatch(updateStream(stream))
       this.setState(prevState => ({ src: prevState.audioContext.createMediaStreamSource(stream) }))
       this.setupAnalyser()
     })
@@ -56,6 +57,9 @@ class VolumeMeter extends React.Component {
     this.setState({
       volume: Number(percentage.toFixed(2))
     })
+    if (percentage >= this.state.threshold && !this.props.record) {
+      this.props.dispatch(startRecord())
+    }
   }
   handleMouse = () => {
     document.addEventListener('mousemove', this.handleMouseMove, true)
@@ -90,7 +94,6 @@ class VolumeMeter extends React.Component {
     this.setState({
       threshold: threshold
     })
-    this.props.dispatch(updateThreshold(threshold))
     this.cookie.set('threshold', threshold)
   }
 
@@ -105,7 +108,14 @@ class VolumeMeter extends React.Component {
 }
 
 VolumeMeter.propTypes = {
-  dispatch: PropTypes.func
+  dispatch: PropTypes.func,
+  record: PropTypes.bool.isRequired
 }
 
-export default connect()(VolumeMeter)
+const mapStateToProps = state => {
+  return {
+    record: state.Recorder.record
+  }
+}
+
+export default connect(mapStateToProps)(VolumeMeter)

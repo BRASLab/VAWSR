@@ -14,9 +14,10 @@ import IconButton from '@material-ui/core/IconButton'
 import Typography from '@material-ui/core/Typography'
 import CloseIcon from '@material-ui/icons/Close'
 import Slide from '@material-ui/core/Slide'
+import { connect } from 'react-redux'
 import axios from 'axios'
 
-import Record from '../../Record'
+import Record from './Record'
 
 const styles = theme => ({
   button: {
@@ -67,18 +68,14 @@ class RegisterDialog extends React.Component {
     } else {
       var fd = new FormData()
       // eslint-disable-next-line
-      for(let i = 0; i<2; i++){
+      for(let i = 0; i < 3; i++){
         fd.append(`file${i + 1}`, this.state.audioBlob[i], `file${i + 1}.wav`)
       }
-
-      fetch({
-        url: 'http://140.125.45.147:8000/registerspeaker',
-        method: 'POST',
-        body: fd
-      })
-        .then(res => res.json())
-        .then(({ success }) => {
-          if (success) this.handleClose()
+      axios
+        .post('http://140.125.45.147:8000/registerspeaker', fd)
+        .then(res => res.data)
+        .then(({ status }) => {
+          if (status) this.handleClose()
         })
     }
   }
@@ -110,7 +107,7 @@ class RegisterDialog extends React.Component {
     const { classes } = this.props
     return (
       <div>
-        <MenuItem onClick={this.handleClickOpen}>語者設定</MenuItem>
+        <MenuItem onClick={this.handleClickOpen}> {this.props.user.hasivector ? '重新註冊語者' : '語者設定'}</MenuItem>
         <Dialog fullScreen open={this.state.open} onClose={this.handleClose} TransitionComponent={Transition}>
           <AppBar className={classes.appBar}>
             <Toolbar>
@@ -151,7 +148,13 @@ class RegisterDialog extends React.Component {
 
 RegisterDialog.propTypes = {
   classes: PropTypes.object.isRequired,
-  callback: PropTypes.func.isRequired
+  callback: PropTypes.func.isRequired,
+  user: PropTypes.object.isRequired
+}
+const mapStateToProps = state => {
+  return {
+    user: state.LoginManager
+  }
 }
 
-export default withStyles(styles)(RegisterDialog)
+export default connect(mapStateToProps)(withStyles(styles)(RegisterDialog))

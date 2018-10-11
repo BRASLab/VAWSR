@@ -3,7 +3,8 @@ export const login = user => {
     type: 'LOGIN',
     fbid: user.fbid,
     email: user.email,
-    name: user.name
+    name: user.name,
+    hasivector: user.hasivector
   }
 }
 

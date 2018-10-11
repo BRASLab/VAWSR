@@ -5,6 +5,7 @@ import Button from '@material-ui/core/Button'
 import Mic from '@material-ui/icons/Mic'
 import Stop from '@material-ui/icons/Stop'
 import MediaStreamRecorder from 'msr'
+import { connect } from 'react-redux'
 
 const styles = theme => ({
   button: {
@@ -26,16 +27,14 @@ class Record extends React.Component {
   }
 
   componentDidMount = () => {
-    navigator.mediaDevices.getUserMedia({ audio: true }).then(_stream => {
-      this.stream = _stream
-      this.recorder = new MediaStreamRecorder(this.stream)
-      this.recorder.mimeType = 'audio/wav'
-      this.recorder.audioChannels = 1
-      this.recorder.ondataavailable = blob => {
-        this.props.handleURL(blob)
-      }
-      this.setState({ ready: true })
-    })
+    const { stream } = this.props
+    this.recorder = new MediaStreamRecorder(stream)
+    this.recorder.mimeType = 'audio/wav'
+    this.recorder.audioChannels = 1
+    this.recorder.ondataavailable = blob => {
+      this.props.handleURL(blob)
+    }
+    this.setState({ ready: true })
   }
   startRecording = () => {
     this.setState({
@@ -72,7 +71,14 @@ class Record extends React.Component {
 
 Record.propTypes = {
   classes: PropTypes.object.isRequired,
-  handleURL: PropTypes.func.isRequired
+  handleURL: PropTypes.func.isRequired,
+  stream: PropTypes.object.isRequired
 }
 
-export default withStyles(styles)(Record)
+const mapStateToProps = state => {
+  return {
+    stream: state.Recorder.stream
+  }
+}
+
+export default connect(mapStateToProps)(withStyles(styles)(Record))
