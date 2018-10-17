@@ -60,8 +60,7 @@ class Record extends React.Component {
           color="secondary"
           onClick={this.state.record ? this.stopRecording : this.startRecording}
           type="button"
-          disabled={!this.state.ready}
-        >
+          disabled={!this.state.ready}>
           {this.state.record ? <Stop /> : <Mic />}
         </Button>
       </div>

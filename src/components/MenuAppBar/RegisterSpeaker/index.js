@@ -135,8 +135,7 @@ class RegisterDialog extends React.Component {
               variant="fab"
               color="secondary"
               type="button"
-              onClick={this.replayBlob}
-            >
+              onClick={this.replayBlob}>
               <PlayArrow />
             </Button>
           </DialogContent>

@@ -88,10 +88,8 @@ class MenuAppBar extends React.Component {
       .get('http://140.125.45.147:8000/auth')
       .then(res => res.data)
       .then(data => {
-        if (data.login) {
-          this.props.dispatch(login(data))
-          console.log('Login success')
-        }
+        this.props.dispatch(login(data))
+        console.log('Login success')
       })
       .catch(() => console.log('Not login'))
   }
@@ -176,8 +174,7 @@ class MenuAppBar extends React.Component {
                     horizontal: 'right'
                   }}
                   open={open}
-                  onClose={this.handleClose}
-                >
+                  onClose={this.handleClose}>
                   {!this.props.login && (
                     <FacebookLogin
                       appId="332358063993706"
