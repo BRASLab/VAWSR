@@ -16,7 +16,7 @@ class Recorder extends React.Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount = () => {
     const { stream } = this.props
     this.recorder = new MediaStreamRecorder(stream)
     this.recorder.mimeType = 'audio/wav'
@@ -27,7 +27,7 @@ class Recorder extends React.Component {
     this.setState({ ready: true })
   }
 
-  shouldComponentUpdate(nextProps) {
+  shouldComponentUpdate = nextProps => {
     if (nextProps.record && !this.state.record) {
       this.recorder.start(3000)
       this.setState({ record: true })
@@ -48,7 +48,7 @@ class Recorder extends React.Component {
       })
       .catch(() => this.handleStop())
   }
-  handleStop() {
+  handleStop = () => {
     this.setState({ record: false })
     this.props.dispatch(stopRecord())
   }
