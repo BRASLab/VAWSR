@@ -84,11 +84,15 @@ class RegisterDialog extends React.Component {
     let obj = {}
     obj[this.state.step] = blob
 
-    this.setState(prevState => ({ audioBlob: Object.assign({}, prevState.audioBlob, obj) }))
+    this.setState(prevState => ({
+      audioBlob: Object.assign({}, prevState.audioBlob, obj)
+    }))
   }
 
   replayBlob = () => {
-    var blobURL = window.URL.createObjectURL(this.state.audioBlob[this.state.step])
+    var blobURL = window.URL.createObjectURL(
+      this.state.audioBlob[this.state.step]
+    )
     var audio0 = new Audio(blobURL)
     audio0.play()
   }
@@ -107,27 +111,48 @@ class RegisterDialog extends React.Component {
     const { classes } = this.props
     return (
       <div>
-        <MenuItem onClick={this.handleClickOpen}> {this.props.user.hasivector ? '重新註冊語者' : '語者設定'}</MenuItem>
-        <Dialog fullScreen open={this.state.open} onClose={this.handleClose} TransitionComponent={Transition}>
+        <MenuItem onClick={this.handleClickOpen}>
+          {' '}
+          {this.props.user.hasivector ? '重新註冊語者' : '語者設定'}
+        </MenuItem>
+        <Dialog
+          fullScreen
+          open={this.state.open}
+          onClose={this.handleClose}
+          TransitionComponent={Transition}>
           <AppBar className={classes.appBar}>
             <Toolbar>
-              <IconButton color="inherit" onClick={this.handleClose} aria-label="Close">
+              <IconButton
+                color="inherit"
+                onClick={this.handleClose}
+                aria-label="Close">
                 <CloseIcon />
               </IconButton>
-              <Typography variant="title" color="inherit" className={classes.flex}>
+              <Typography
+                variant="title"
+                color="inherit"
+                className={classes.flex}>
                 語者設定
               </Typography>
               <Button onClick={this.handleBack} color="inherit">
                 Back
               </Button>
-              <Button onClick={this.handleNext} color="inherit" autoFocus disabled={!this.state.audioBlob[this.state.step]}>
+              <Button
+                onClick={this.handleNext}
+                color="inherit"
+                autoFocus
+                disabled={!this.state.audioBlob[this.state.step]}>
                 {this.state.step === 2 ? 'Finish' : 'Next'}
               </Button>
             </Toolbar>
           </AppBar>
-          <DialogTitle id="responsive-dialog-title">{'請朗讀下列文字進行語者註冊'}</DialogTitle>
+          <DialogTitle id="responsive-dialog-title">
+            {'請朗讀下列文字進行語者註冊'}
+          </DialogTitle>
           <DialogContent>
-            <DialogContentText>{this.state.sentences[this.state.step]}</DialogContentText>
+            <DialogContentText>
+              {this.state.sentences[this.state.step]}
+            </DialogContentText>
             <Record handleURL={this.handleURL} />
             <Button
               disabled={!this.state.audioBlob[this.state.step]}

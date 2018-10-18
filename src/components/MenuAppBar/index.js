@@ -114,7 +114,13 @@ class MenuAppBar extends React.Component {
     axios
       .post(
         'http://140.125.45.147:8000/login',
-        { email: res.email, name: res.name, token: res.accessToken, signed: res.signedRequest, fbid: Number(res.id) },
+        {
+          email: res.email,
+          name: res.name,
+          token: res.accessToken,
+          signed: res.signedRequest,
+          fbid: Number(res.id)
+        },
         {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -138,10 +144,16 @@ class MenuAppBar extends React.Component {
       <div className={classes.root}>
         <AppBar position="static">
           <Toolbar>
-            <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
+            <IconButton
+              className={classes.menuButton}
+              color="inherit"
+              aria-label="Menu">
               <MenuIcon />
             </IconButton>
-            <Typography variant="title" color="inherit" className={classes.grow}>
+            <Typography
+              variant="title"
+              color="inherit"
+              className={classes.grow}>
               具語者辨識之語音助理
             </Typography>
             <div className={classes.search}>
@@ -159,7 +171,11 @@ class MenuAppBar extends React.Component {
             </div>
             {this.props.stream && (
               <div>
-                <IconButton aria-owns={open ? 'menu-appbar' : null} aria-haspopup="true" onClick={this.handleMenu} color="inherit">
+                <IconButton
+                  aria-owns={open ? 'menu-appbar' : null}
+                  aria-haspopup="true"
+                  onClick={this.handleMenu}
+                  color="inherit">
                   <AccountCircle />
                 </IconButton>
                 <Menu
@@ -180,11 +196,19 @@ class MenuAppBar extends React.Component {
                       appId="332358063993706"
                       fields="name,email,picture"
                       callback={this.handleLogin}
-                      render={renderProps => <MenuItem onClick={renderProps.onClick}>Facebook Login</MenuItem>}
+                      render={renderProps => (
+                        <MenuItem onClick={renderProps.onClick}>
+                          Facebook Login
+                        </MenuItem>
+                      )}
                     />
                   )}
-                  {this.props.login && <MenuItem onClick={this.handleLogout}>Logout</MenuItem>}
-                  {this.props.login && <RegisterSpeaker callback={this.handleClose} />}
+                  {this.props.login && (
+                    <MenuItem onClick={this.handleLogout}>Logout</MenuItem>
+                  )}
+                  {this.props.login && (
+                    <RegisterSpeaker callback={this.handleClose} />
+                  )}
                 </Menu>
               </div>
             )}

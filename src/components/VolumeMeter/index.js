@@ -21,7 +21,9 @@ class VolumeMeter extends React.Component {
   componentDidMount() {
     navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
       this.props.dispatch(updateStream(stream))
-      this.setState(prevState => ({ src: prevState.audioContext.createMediaStreamSource(stream) }))
+      this.setState(prevState => ({
+        src: prevState.audioContext.createMediaStreamSource(stream)
+      }))
       this.setupAnalyser()
     })
     let threshold = this.cookie.get('threshold')
@@ -72,7 +74,8 @@ class VolumeMeter extends React.Component {
     } else if (event.clientX > this.node.offsetWidth + this.node.offsetLeft) {
       threshold = (this.node.offsetWidth / this.node.clientWidth) * 100
     } else {
-      threshold = ((event.clientX - this.node.offsetLeft) / this.node.clientWidth) * 100
+      threshold =
+        ((event.clientX - this.node.offsetLeft) / this.node.clientWidth) * 100
     }
 
     this.setState({
@@ -88,7 +91,8 @@ class VolumeMeter extends React.Component {
     } else if (event.clientX > this.node.offsetWidth + this.node.offsetLeft) {
       threshold = (this.node.offsetWidth / this.node.clientWidth) * 100
     } else {
-      threshold = ((event.clientX - this.node.offsetLeft) / this.node.clientWidth) * 100
+      threshold =
+        ((event.clientX - this.node.offsetLeft) / this.node.clientWidth) * 100
     }
 
     this.setState({
@@ -101,7 +105,11 @@ class VolumeMeter extends React.Component {
     let { volume, threshold } = this.state
     return (
       <div ref={node => (this.node = node)}>
-        <Meter handleMouse={this.handleMouse} threshold={threshold} width={volume} />
+        <Meter
+          handleMouse={this.handleMouse}
+          threshold={threshold}
+          width={volume}
+        />
       </div>
     )
   }

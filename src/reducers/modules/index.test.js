@@ -35,14 +35,18 @@ describe('LoginManager reducer', () => {
       name: 'test',
       hasivector: false
     }
-    expect(LoginManager(undefined, Object.assign({ type: 'LOGIN' }, action))).toEqual({
+    expect(
+      LoginManager(undefined, Object.assign({ type: 'LOGIN' }, action))
+    ).toEqual({
       login: true,
       ...action
     })
   })
 
   it('should handle LOGOUT', () => {
-    expect(LoginManager(undefined, { type: 'LOGOUT' })).toEqual({ login: false })
+    expect(LoginManager(undefined, { type: 'LOGOUT' })).toEqual({
+      login: false
+    })
   })
 })
 
@@ -54,14 +58,23 @@ describe('Recorder reducer', () => {
   })
 
   it('should handle UPDATE_STREAM', () => {
-    expect(Recorder(undefined, { type: 'UPDATE_STREAM', stream })).toEqual({ record: false, stream })
+    expect(Recorder(undefined, { type: 'UPDATE_STREAM', stream })).toEqual({
+      record: false,
+      stream
+    })
   })
 
   it('should handle START_RECORD', () => {
-    expect(Recorder({ stream }, { type: 'START_RECORD' })).toEqual({ record: true, stream })
+    expect(Recorder({ stream }, { type: 'START_RECORD' })).toEqual({
+      record: true,
+      stream
+    })
   })
 
   it('should handle STOP_RECORD', () => {
-    expect(Recorder({ stream }, { type: 'STOP_RECORD' })).toEqual({ record: false, stream })
+    expect(Recorder({ stream }, { type: 'STOP_RECORD' })).toEqual({
+      record: false,
+      stream
+    })
   })
 })

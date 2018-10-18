@@ -36,7 +36,8 @@ const Grabber = styled.div`
   border: 1px solid #dcddde;
   position: absolute;
   border-radius: 3px;
-  box-shadow: 0 3px 1px 0 rgba(0, 0, 0, 0.05), 0 2px 2px 0 rgba(0, 0, 0, 0.1), 0 3px 3px 0 rgba(0, 0, 0, 0.05);
+  box-shadow: 0 3px 1px 0 rgba(0, 0, 0, 0.05), 0 2px 2px 0 rgba(0, 0, 0, 0.1),
+    0 3px 3px 0 rgba(0, 0, 0, 0.05);
   cursor: ew-resize;
   height: 24px;
   left: 0px;
@@ -57,14 +58,28 @@ class Meter extends React.Component {
     const { width, threshold, handleMouse } = this.props
     return (
       <Slider>
-        <Bar style={{ background: 'rgb(105, 196, 154) none repeat scroll 0% 0%' }}>
-          <BarFill style={{ width: threshold + '%', background: 'rgb(251, 184, 72) none repeat scroll 0% 0%' }} />
+        <Bar
+          style={{ background: 'rgb(105, 196, 154) none repeat scroll 0% 0%' }}>
+          <BarFill
+            style={{
+              width: threshold + '%',
+              background: 'rgb(251, 184, 72) none repeat scroll 0% 0%'
+            }}
+          />
         </Bar>
-        <Bar style={{ position: 'absolute', top: '16px', background: 'transparent' }}>
+        <Bar
+          style={{
+            position: 'absolute',
+            top: '16px',
+            background: 'transparent'
+          }}>
           <BarFill style={{ width: width + '%' }} />
         </Bar>
         <Track>
-          <Grabber onMouseDown={handleMouse} style={{ left: threshold + '%' }} />
+          <Grabber
+            onMouseDown={handleMouse}
+            style={{ left: threshold + '%' }}
+          />
         </Track>
       </Slider>
     )
