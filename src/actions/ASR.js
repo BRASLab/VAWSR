@@ -1,6 +1,6 @@
 export const SpeakerRecognition = expired => {
   return {
-    type: 'SPEAKER_RECONGNITION',
+    type: 'SPEAKER_RECOGNITION',
     expired
   }
 }
