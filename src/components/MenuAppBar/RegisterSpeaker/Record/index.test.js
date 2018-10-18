@@ -1,13 +1,10 @@
 import React from 'react'
 import Record from './index.js'
-import Enzyme, { mount } from 'enzyme'
+import { mount } from 'enzyme'
 import { Provider } from 'react-redux'
-import Adapter from 'enzyme-adapter-react-16'
 import configureStore from 'redux-mock-store'
 
 import msr from 'msr'
-
-Enzyme.configure({ adapter: new Adapter() })
 
 jest.mock('msr')
 
