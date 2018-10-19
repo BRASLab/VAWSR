@@ -1,29 +1,31 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { fade } from '@material-ui/core/styles/colorManipulator'
-import { withStyles } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton'
+import Typography from '@material-ui/core/Typography'
+import InputBase from '@material-ui/core/InputBase'
 import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
-import Input from '@material-ui/core/Input'
+import { fade } from '@material-ui/core/styles/colorManipulator'
+import { withStyles } from '@material-ui/core/styles'
 import MenuIcon from '@material-ui/icons/Menu'
 import SearchIcon from '@material-ui/icons/Search'
 import AccountCircle from '@material-ui/icons/AccountCircle'
 import { connect } from 'react-redux'
-import axios from 'axios'
+import { bindActionCreators } from 'redux'
+import { toast } from 'react-toastify'
 
+import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
 import { login, logout } from '../../actions'
 import RegisterSpeaker from './RegisterSpeaker'
-import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
+import axios from 'axios'
 
 axios.defaults.withCredentials = true
 
 const styles = theme => ({
   root: {
-    flexGrow: 1
+    width: '100%'
   },
   grow: {
     flexGrow: 1
@@ -31,6 +33,27 @@ const styles = theme => ({
   menuButton: {
     marginLeft: -12,
     marginRight: 20
+  },
+  title: {
+    display: 'none',
+    [theme.breakpoints.up('sm')]: {
+      display: 'block'
+    }
+  },
+  search: {
+    position: 'relative',
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: fade(theme.palette.common.white, 0.15),
+    '&:hover': {
+      backgroundColor: fade(theme.palette.common.white, 0.25)
+    },
+    marginRight: theme.spacing.unit * 2,
+    marginLeft: 0,
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: theme.spacing.unit * 3,
+      width: 'auto'
+    }
   },
   searchIcon: {
     width: theme.spacing.unit * 9,
@@ -40,20 +63,6 @@ const styles = theme => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center'
-  },
-  search: {
-    position: 'relative',
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: fade(theme.palette.common.white, 0.15),
-    '&:hover': {
-      backgroundColor: fade(theme.palette.common.white, 0.25)
-    },
-    marginLeft: 0,
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing.unit,
-      width: 'auto'
-    }
   },
   inputRoot: {
     color: 'inherit',
@@ -66,54 +75,57 @@ const styles = theme => ({
     paddingLeft: theme.spacing.unit * 10,
     transition: theme.transitions.create('width'),
     width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      width: 120,
-      '&:focus': {
-        width: 200
-      }
+    [theme.breakpoints.up('md')]: {
+      width: 200
+    }
+  },
+  sectionDesktop: {
+    display: 'none',
+    [theme.breakpoints.up('md')]: {
+      display: 'flex'
+    }
+  },
+  sectionMobile: {
+    display: 'flex',
+    [theme.breakpoints.up('md')]: {
+      display: 'none'
     }
   }
 })
 
-class MenuAppBar extends React.Component {
+class PrimarySearchAppBar extends React.Component {
   state = {
-    anchorEl: null,
-    showSetting: null,
-    login: this.props.login,
-    user: this.props.user
-  }
-  constructor(props) {
-    super(props)
-    axios
-      .get('https://vawsr.mino.tw/auth')
-      .then(res => res.data)
-      .then(data => {
-        this.props.dispatch(login(data))
-        console.log('Login success')
-      })
-      .catch(() => console.log('Not login'))
-  }
-  handleChange = event => {
-    this.setState({ auth: event.target.checked })
+    anchorEl: null
   }
 
-  handleMenu = event => {
+  constructor(props) {
+    super(props)
+    const { hostname, login } = this.props
+    axios
+      .get(`${hostname}/auth`)
+      .then(res => res.data)
+      .then(data => {
+        login(data)
+        console.log('Auth success')
+      })
+      .catch(() => {
+        console.log('Auth failed')
+      })
+  }
+
+  handleProfileMenuOpen = event => {
     this.setState({ anchorEl: event.currentTarget })
   }
 
-  handleClose = () => {
+  handleMenuClose = () => {
     this.setState({ anchorEl: null })
   }
-  handleLogout = () => {
-    this.handleClose()
-    axios.get('https://vawsr.mino.tw/logout')
-    this.props.dispatch(logout())
-  }
+
   handleLogin = res => {
-    this.handleClose()
+    const { hostname, login } = this.props
     axios
       .post(
-        'https://vawsr.mino.tw/login',
+        `${hostname}/login`,
         {
           email: res.email,
           name: res.name,
@@ -129,16 +141,56 @@ class MenuAppBar extends React.Component {
       )
       .then(res => res.data)
       .then(data => {
-        this.props.dispatch(login(data))
-        console.log('Login success')
+        login(data)
+        toast.success('Login success', {
+          position: toast.POSITION.BOTTOM_RIGHT
+        })
       })
-      .catch(err => console.log(err))
+      .catch(() =>
+        toast.error('Login failed', {
+          position: toast.POSITION.BOTTOM_RIGHT
+        })
+      )
+      .finally(() => {
+        this.handleMenuClose()
+      })
+  }
+
+  handleLogout = () => {
+    const { logout, hostname } = this.props
+    axios.get(`${hostname}/logout`)
+    logout()
+    toast.warn('Logout success', { position: toast.POSITION.BOTTOM_RIGHT })
+    this.handleMenuClose()
   }
 
   render() {
-    const { classes } = this.props
     const { anchorEl } = this.state
-    const open = Boolean(anchorEl)
+    const { classes, logined, stream } = this.props
+    const isMenuOpen = Boolean(anchorEl)
+
+    const renderMenu = (
+      <Menu
+        anchorEl={anchorEl}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={isMenuOpen}
+        onClose={this.handleMenuClose}>
+        {logined ? (
+          <MenuItem onClick={this.handleLogout}>Logout</MenuItem>
+        ) : (
+          <FacebookLogin
+            appId="332358063993706"
+            fields="name,email,picture"
+            callback={this.handleLogin}
+            render={renderProps => (
+              <MenuItem onClick={renderProps.onClick}>Facebook Login</MenuItem>
+            )}
+          />
+        )}
+        {logined && <RegisterSpeaker callback={this.handleMenuClose} />}
+      </Menu>
+    )
 
     return (
       <div className={classes.root}>
@@ -147,92 +199,85 @@ class MenuAppBar extends React.Component {
             <IconButton
               className={classes.menuButton}
               color="inherit"
-              aria-label="Menu">
+              aria-label="Open drawer">
               <MenuIcon />
             </IconButton>
             <Typography
-              variant="title"
+              className={classes.title}
+              variant="h6"
               color="inherit"
-              className={classes.grow}>
+              noWrap>
               具語者辨識之語音助理
             </Typography>
             <div className={classes.search}>
               <div className={classes.searchIcon}>
                 <SearchIcon />
               </div>
-              <Input
+              <InputBase
                 placeholder="Search…"
-                disableUnderline
                 classes={{
                   root: classes.inputRoot,
                   input: classes.inputInput
                 }}
               />
             </div>
-            {this.props.stream && (
-              <div>
-                <IconButton
-                  aria-owns={open ? 'menu-appbar' : null}
-                  aria-haspopup="true"
-                  onClick={this.handleMenu}
-                  color="inherit">
-                  <AccountCircle />
-                </IconButton>
-                <Menu
-                  id="menu-appbar"
-                  anchorEl={anchorEl}
-                  anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right'
-                  }}
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right'
-                  }}
-                  open={open}
-                  onClose={this.handleClose}>
-                  {!this.props.login && (
-                    <FacebookLogin
-                      appId="332358063993706"
-                      fields="name,email,picture"
-                      callback={this.handleLogin}
-                      render={renderProps => (
-                        <MenuItem onClick={renderProps.onClick}>
-                          Facebook Login
-                        </MenuItem>
-                      )}
-                    />
-                  )}
-                  {this.props.login && (
-                    <MenuItem onClick={this.handleLogout}>Logout</MenuItem>
-                  )}
-                  {this.props.login && (
-                    <RegisterSpeaker callback={this.handleClose} />
-                  )}
-                </Menu>
-              </div>
-            )}
+            <div className={classes.grow} />
+            <div className={classes.sectionDesktop}>
+              <IconButton
+                aria-owns={isMenuOpen ? 'material-appbar' : null}
+                aria-haspopup="true"
+                onClick={this.handleProfileMenuOpen}
+                color="inherit">
+                <AccountCircle />
+              </IconButton>
+            </div>
+            <div className={classes.sectionMobile}>
+              <IconButton
+                aria-owns={isMenuOpen ? 'material-appbar' : null}
+                aria-haspopup="true"
+                onClick={this.handleProfileMenuOpen}
+                color="inherit">
+                <AccountCircle />
+              </IconButton>
+            </div>
           </Toolbar>
         </AppBar>
+        {stream && renderMenu}
       </div>
     )
   }
 }
 
-MenuAppBar.propTypes = {
+PrimarySearchAppBar.propTypes = {
   classes: PropTypes.object.isRequired,
-  dispatch: PropTypes.func,
-  login: PropTypes.bool.isRequired,
+  logined: PropTypes.bool.isRequired,
   user: PropTypes.object.isRequired,
+  hostname: PropTypes.string.isRequired,
+  login: PropTypes.func.isRequired,
+  logout: PropTypes.func.isRequired,
   stream: PropTypes.object
 }
 
 const mapStateToProps = state => {
   return {
-    login: state.LoginManager.login,
+    logined: state.LoginManager.logined,
+    hostname: state.Host.hostname,
     user: state.LoginManager,
     stream: state.Recorder.stream
   }
 }
 
-export default connect(mapStateToProps)(withStyles(styles)(MenuAppBar))
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators(
+    {
+      login: login,
+      logout: logout
+    },
+    dispatch
+  )
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(PrimarySearchAppBar))

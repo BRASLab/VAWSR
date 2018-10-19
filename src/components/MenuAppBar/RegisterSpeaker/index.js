@@ -13,8 +13,11 @@ import Toolbar from '@material-ui/core/Toolbar'
 import IconButton from '@material-ui/core/IconButton'
 import Typography from '@material-ui/core/Typography'
 import CloseIcon from '@material-ui/icons/Close'
+import green from '@material-ui/core/colors/green'
+import CircularProgress from '@material-ui/core/CircularProgress'
 import Slide from '@material-ui/core/Slide'
 import { connect } from 'react-redux'
+import { toast } from 'react-toastify'
 import axios from 'axios'
 
 import Record from './Record'
@@ -23,6 +26,14 @@ const styles = theme => ({
   button: {
     margin: theme.spacing.unit,
     float: 'right'
+  },
+  buttonProgress: {
+    color: green[500],
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -12,
+    marginLeft: -12
   },
   appBar: {
     position: 'relative'
@@ -36,24 +47,27 @@ function Transition(props) {
   return <Slide direction="up" {...props} />
 }
 
-class RegisterDialog extends React.Component {
+export class RegisterSpeaker extends React.Component {
   state = {
     open: false,
     sentences: [],
     audioBlob: {},
     audio: [],
-    step: 0
+    step: 0,
+    loading: false
   }
 
-  handleClickOpen = () => {
+  handleClick = () => {
     this.generateSentences()
     this.setState({ open: true })
   }
 
   handleClose = () => {
+    const { callback } = this.props
     this.setState({ open: false })
-    this.props.callback()
+    callback()
   }
+
   handleBack = () => {
     if (this.state.step > 0) {
       this.setState(prevState => ({ step: prevState.step - 1 }))
@@ -63,19 +77,25 @@ class RegisterDialog extends React.Component {
   }
 
   handleNext = () => {
+    const { hostname } = this.props
     if (this.state.step < 2) {
       this.setState(prevState => ({ step: prevState.step + 1 }))
     } else {
+      this.setState({ loading: true })
       var fd = new FormData()
       // eslint-disable-next-line
       for(let i = 0; i < 3; i++){
         fd.append(`file${i + 1}`, this.state.audioBlob[i], `file${i + 1}.wav`)
       }
       axios
-        .post('https://vawsr.mino.tw/registerspeaker', fd)
-        .then(res => res.data)
-        .then(({ status }) => {
-          if (status) this.handleClose()
+        .post(`${hostname}/registerspeaker`, fd)
+        .then(() => {
+          toast.success('語者註冊成功')
+          this.handleClose()
+        })
+        .catch(() => {
+          toast.error('語者註冊失敗，請重新傳送一遍')
+          this.setState({ loading: false })
         })
     }
   }
@@ -98,26 +118,31 @@ class RegisterDialog extends React.Component {
   }
 
   generateSentences = () => {
+    const { hostname } = this.props
     axios
-      .get('https://vawsr.mino.tw/sentences.json')
+      .get(`${hostname}/sentences.json`)
       .then(res => res.data)
       .then(({ sentences }) => {
         this.setState({ sentences: sentences })
       })
-      .catch(err => console.log(err))
+      .catch(err => {
+        console.log(err)
+        toast.error('取得語料失敗，請檢查登入是否過期')
+        this.handleClose()
+      })
   }
 
   render() {
-    const { classes } = this.props
+    const { classes, hasivector } = this.props
+    const { loading, step, sentences, audioBlob, open } = this.state
     return (
       <div>
-        <MenuItem onClick={this.handleClickOpen}>
-          {' '}
-          {this.props.user.hasivector ? '重新註冊語者' : '語者設定'}
+        <MenuItem onClick={this.handleClick}>
+          <p>{hasivector ? '重新註冊語者' : '語者設定'}</p>
         </MenuItem>
         <Dialog
           fullScreen
-          open={this.state.open}
+          open={open}
           onClose={this.handleClose}
           TransitionComponent={Transition}>
           <AppBar className={classes.appBar}>
@@ -128,10 +153,7 @@ class RegisterDialog extends React.Component {
                 aria-label="Close">
                 <CloseIcon />
               </IconButton>
-              <Typography
-                variant="title"
-                color="inherit"
-                className={classes.flex}>
+              <Typography variant="h6" color="inherit" className={classes.flex}>
                 語者設定
               </Typography>
               <Button onClick={this.handleBack} color="inherit">
@@ -141,8 +163,14 @@ class RegisterDialog extends React.Component {
                 onClick={this.handleNext}
                 color="inherit"
                 autoFocus
-                disabled={!this.state.audioBlob[this.state.step]}>
-                {this.state.step === 2 ? 'Finish' : 'Next'}
+                disabled={!audioBlob[step] || loading}>
+                {step === 2 ? 'Finish' : 'Next'}
+                {loading && (
+                  <CircularProgress
+                    size={24}
+                    className={classes.buttonProgress}
+                  />
+                )}
               </Button>
             </Toolbar>
           </AppBar>
@@ -150,12 +178,12 @@ class RegisterDialog extends React.Component {
             {'請朗讀下列文字進行語者註冊'}
           </DialogTitle>
           <DialogContent>
-            <DialogContentText>
-              {this.state.sentences[this.state.step]}
+            <DialogContentText id="sentences">
+              {sentences[step]}
             </DialogContentText>
             <Record handleURL={this.handleURL} />
             <Button
-              disabled={!this.state.audioBlob[this.state.step]}
+              disabled={!audioBlob[step]}
               className={classes.button}
               variant="fab"
               color="secondary"
@@ -170,15 +198,17 @@ class RegisterDialog extends React.Component {
   }
 }
 
-RegisterDialog.propTypes = {
+RegisterSpeaker.propTypes = {
   classes: PropTypes.object.isRequired,
   callback: PropTypes.func.isRequired,
-  user: PropTypes.object.isRequired
+  hasivector: PropTypes.bool.isRequired,
+  hostname: PropTypes.string.isRequired
 }
 const mapStateToProps = state => {
   return {
-    user: state.LoginManager
+    hasivector: state.LoginManager.hasivector,
+    hostname: state.Host.hostname
   }
 }
 
-export default connect(mapStateToProps)(withStyles(styles)(RegisterDialog))
+export default connect(mapStateToProps)(withStyles(styles)(RegisterSpeaker))

@@ -1,15 +1,15 @@
-const LoginManager = (state = { login: false }, action) => {
+const LoginManager = (state = { logined: false }, action) => {
   switch (action.type) {
     case 'LOGIN':
       return {
         fbid: action.fbid,
         email: action.email,
         name: action.name,
-        login: true,
+        logined: true,
         hasivector: action.hasivector
       }
     case 'LOGOUT':
-      return { login: false }
+      return { logined: false }
 
     default:
       return state

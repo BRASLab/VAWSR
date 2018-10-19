@@ -1,6 +1,7 @@
 import ASR from './ASR'
 import LoginManager from './LoginManager'
 import Recorder from './Recorder'
+import Host from './Host'
 
 describe('ASR reducer', () => {
   it('should return the initial state', () => {
@@ -24,7 +25,7 @@ describe('ASR reducer', () => {
 
 describe('LoginManager reducer', () => {
   it('should retrun inital state', () => {
-    const initialState = { login: false }
+    const initialState = { logined: false }
     expect(LoginManager(undefined, {})).toEqual(initialState)
   })
 
@@ -38,14 +39,14 @@ describe('LoginManager reducer', () => {
     expect(
       LoginManager(undefined, Object.assign({ type: 'LOGIN' }, action))
     ).toEqual({
-      login: true,
+      logined: true,
       ...action
     })
   })
 
   it('should handle LOGOUT', () => {
     expect(LoginManager(undefined, { type: 'LOGOUT' })).toEqual({
-      login: false
+      logined: false
     })
   })
 })
@@ -75,6 +76,23 @@ describe('Recorder reducer', () => {
     expect(Recorder({ stream }, { type: 'STOP_RECORD' })).toEqual({
       record: false,
       stream
+    })
+  })
+})
+
+describe('Host reducer', () => {
+  it('should retrun inital state', () => {
+    const initialState = { hostname: 'https://vawsr.mino.tw' }
+    expect(Host(undefined, {})).toEqual(initialState)
+  })
+
+  it('should handle CHANGE_HOST', () => {
+    const action = {
+      type: 'CHANGE_HOST',
+      hostname: 'https://test'
+    }
+    expect(Host(undefined, action)).toEqual({
+      hostname: 'https://test'
     })
   })
 })
