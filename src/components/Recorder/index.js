@@ -38,7 +38,7 @@ class Recorder extends React.Component {
     var fd = new FormData()
     fd.append('file', blob, 'file.wav')
     axios
-      .post('http://140.125.45.147:8000/sr', fd)
+      .post('https://vawsr.mino.tw/sr', fd)
       .then(res => res.data)
       .then(({ status, expired }) => {
         if (status) {

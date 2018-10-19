@@ -72,7 +72,7 @@ class RegisterDialog extends React.Component {
         fd.append(`file${i + 1}`, this.state.audioBlob[i], `file${i + 1}.wav`)
       }
       axios
-        .post('http://140.125.45.147:8000/registerspeaker', fd)
+        .post('https://vawsr.mino.tw/registerspeaker', fd)
         .then(res => res.data)
         .then(({ status }) => {
           if (status) this.handleClose()
@@ -99,7 +99,7 @@ class RegisterDialog extends React.Component {
 
   generateSentences = () => {
     axios
-      .get('http://140.125.45.147:8000/sentences.json')
+      .get('https://vawsr.mino.tw/sentences.json')
       .then(res => res.data)
       .then(({ sentences }) => {
         this.setState({ sentences: sentences })

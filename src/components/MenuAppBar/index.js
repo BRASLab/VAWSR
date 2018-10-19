@@ -85,7 +85,7 @@ class MenuAppBar extends React.Component {
   constructor(props) {
     super(props)
     axios
-      .get('http://140.125.45.147:8000/auth')
+      .get('https://vawsr.mino.tw/auth')
       .then(res => res.data)
       .then(data => {
         this.props.dispatch(login(data))
@@ -106,14 +106,14 @@ class MenuAppBar extends React.Component {
   }
   handleLogout = () => {
     this.handleClose()
-    axios.get('http://140.125.45.147:8000/logout')
+    axios.get('https://vawsr.mino.tw/logout')
     this.props.dispatch(logout())
   }
   handleLogin = res => {
     this.handleClose()
     axios
       .post(
-        'http://140.125.45.147:8000/login',
+        'https://vawsr.mino.tw/login',
         {
           email: res.email,
           name: res.name,
