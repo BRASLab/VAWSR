@@ -2,6 +2,7 @@
   "name": "vawsr",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://sean2525.github.io/VAWSR",
   "jest": {
     "collectCoverageFrom": [
       "src/**/*.{js,jsx}",
