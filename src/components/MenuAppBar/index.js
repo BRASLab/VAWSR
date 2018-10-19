@@ -182,6 +182,7 @@ class PrimarySearchAppBar extends React.Component {
           <FacebookLogin
             appId="332358063993706"
             fields="name,email,picture"
+            disableMobileRedirect={true}
             callback={this.handleLogin}
             render={renderProps => (
               <MenuItem onClick={renderProps.onClick}>Facebook Login</MenuItem>

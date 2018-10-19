@@ -75,7 +75,7 @@ class Meter extends React.Component {
           }}>
           <BarFill style={{ width: width + '%' }} />
         </Bar>
-        <Track>
+        <Track onMouseDown={handleMouse}>
           <Grabber
             onMouseDown={handleMouse}
             style={{ left: threshold + '%' }}
