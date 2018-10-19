@@ -6,7 +6,9 @@
     "collectCoverageFrom": [
       "src/**/*.{js,jsx}",
       "!<rootDir>/node_modules/",
-      "!src/*.{js,jsx}"
+      "!src/*.{js,jsx}",
+      "!src/reducers/**/index.js",
+      "!src/actions/**/index.js"
     ]
   },
   "scripts": {
