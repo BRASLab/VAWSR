@@ -77,10 +77,10 @@ export class RegisterSpeaker extends React.Component {
   }
 
   handleNext = () => {
-    const { hostname } = this.props
     if (this.state.step < 2) {
       this.setState(prevState => ({ step: prevState.step + 1 }))
     } else {
+      const { hostname } = this.props
       this.setState({ loading: true })
       var fd = new FormData()
       // eslint-disable-next-line
@@ -125,8 +125,7 @@ export class RegisterSpeaker extends React.Component {
       .then(({ sentences }) => {
         this.setState({ sentences: sentences })
       })
-      .catch(err => {
-        console.log(err)
+      .catch(() => {
         toast.error('取得語料失敗，請檢查登入是否過期')
         this.handleClose()
       })
