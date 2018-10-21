@@ -88,7 +88,11 @@ export class RegisterSpeaker extends React.Component {
         fd.append(`file${i + 1}`, this.state.audioBlob[i], `file${i + 1}.wav`)
       }
       axios
-        .post(`${hostname}/registerspeaker`, fd)
+        .post(`${hostname}/registerspeaker`, fd, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
         .then(() => {
           toast.success('語者註冊成功')
           this.handleClose()

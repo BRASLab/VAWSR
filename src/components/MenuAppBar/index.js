@@ -12,6 +12,7 @@ import { withStyles } from '@material-ui/core/styles'
 import MenuIcon from '@material-ui/icons/Menu'
 import SearchIcon from '@material-ui/icons/Search'
 import AccountCircle from '@material-ui/icons/AccountCircle'
+import Avatar from '@material-ui/core/Avatar'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { toast } from 'react-toastify'
@@ -166,7 +167,7 @@ class PrimarySearchAppBar extends React.Component {
 
   render() {
     const { anchorEl } = this.state
-    const { classes, logined, stream } = this.props
+    const { classes, logined, stream, user } = this.props
     const isMenuOpen = Boolean(anchorEl)
 
     const renderMenu = (
@@ -229,7 +230,16 @@ class PrimarySearchAppBar extends React.Component {
                 aria-haspopup="true"
                 onClick={this.handleProfileMenuOpen}
                 color="inherit">
-                <AccountCircle />
+                {user.fbid ? (
+                  <Avatar
+                    alt={user.name}
+                    src={`https://graph.facebook.com/${
+                      user.fbid
+                    }/picture?type=normal`}
+                  />
+                ) : (
+                  <AccountCircle />
+                )}
               </IconButton>
             </div>
             <div className={classes.sectionMobile}>
