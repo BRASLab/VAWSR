@@ -2,10 +2,9 @@ import { connect } from 'react-redux'
 import MediaStreamRecorder from 'msr'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { SpeakerRecognition } from '../../actions/ASR'
-
+import { SpeakerRecognition, stopRecord } from '../../actions'
+import { bindActionCreators } from 'redux'
 import axios from 'axios'
-import { stopRecord } from '../../actions/Recorder'
 
 class Recorder extends React.Component {
   constructor(props) {
@@ -40,17 +39,15 @@ class Recorder extends React.Component {
     axios
       .post('https://vawsr.mino.tw/sr', fd)
       .then(res => res.data)
-      .then(({ status, expired }) => {
-        if (status) {
-          this.handleStop()
-          this.dispatch(SpeakerRecognition(expired))
-        }
+      .then(({ expired }) => {
+        this.props.SpeakerRecognition(expired)
       })
-      .catch(() => this.handleStop())
+      .catch(() => console.log('recognition failed'))
+      .finally(() => this.handleStop())
   }
   handleStop = () => {
     this.setState({ record: false })
-    this.props.dispatch(stopRecord())
+    this.props.stopRecord()
   }
   render() {
     return <div />
@@ -60,7 +57,8 @@ class Recorder extends React.Component {
 Recorder.propTypes = {
   stream: PropTypes.object.isRequired,
   record: PropTypes.bool.isRequired,
-  dispatch: PropTypes.func
+  SpeakerRecognition: PropTypes.func,
+  stopRecord: PropTypes.func
 }
 
 const mapStateToProps = state => {
@@ -70,4 +68,17 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps)(Recorder)
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators(
+    {
+      SpeakerRecognition,
+      stopRecord
+    },
+    dispatch
+  )
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Recorder)

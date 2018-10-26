@@ -248,7 +248,16 @@ class PrimarySearchAppBar extends React.Component {
                 aria-haspopup="true"
                 onClick={this.handleProfileMenuOpen}
                 color="inherit">
-                <AccountCircle />
+                {user.fbid ? (
+                  <Avatar
+                    alt={user.name}
+                    src={`https://graph.facebook.com/${
+                      user.fbid
+                    }/picture?type=normal`}
+                  />
+                ) : (
+                  <AccountCircle />
+                )}
               </IconButton>
             </div>
           </Toolbar>
@@ -281,8 +290,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
-      login: login,
-      logout: logout
+      login,
+      logout
     },
     dispatch
   )
