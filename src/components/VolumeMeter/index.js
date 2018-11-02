@@ -2,7 +2,9 @@ import React from 'react'
 import Meter from './Meter'
 import Cookies from 'universal-cookie'
 import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import PropTypes from 'prop-types'
+import Recorder from '../Recorder'
 import { startRecord, updateStream } from '../../actions/Recorder'
 
 class VolumeMeter extends React.Component {
@@ -13,16 +15,19 @@ class VolumeMeter extends React.Component {
       audioContext: new AudioContext(),
       src: null,
       volume: 0,
-      threshold: 50
+      threshold: 50,
+      stream: false
     }
     this.cookie = new Cookies()
   }
 
   componentDidMount() {
+    const { updateStream } = this.props
     navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-      this.props.dispatch(updateStream(stream))
+      updateStream(stream)
       this.setState(prevState => ({
-        src: prevState.audioContext.createMediaStreamSource(stream)
+        src: prevState.audioContext.createMediaStreamSource(stream),
+        stream: stream
       }))
       this.setupAnalyser()
     })
@@ -59,10 +64,13 @@ class VolumeMeter extends React.Component {
     this.setState({
       volume: Number(percentage.toFixed(2))
     })
-    if (percentage >= this.state.threshold && !this.props.record) {
-      this.props.dispatch(startRecord())
+    const { startRecord, record } = this.props
+    const { stream, threshold } = this.state
+    if (stream && percentage >= threshold && !record) {
+      startRecord()
     }
   }
+
   handleMouse = () => {
     document.addEventListener('mousemove', this.handleMouseMove, true)
     document.addEventListener('mouseup', this.handleMouseUp, true)
@@ -102,7 +110,8 @@ class VolumeMeter extends React.Component {
   }
 
   render() {
-    let { volume, threshold } = this.state
+    let { volume, threshold, stream } = this.state
+    let { logined } = this.props
     return (
       <div ref={node => (this.node = node)}>
         <Meter
@@ -110,20 +119,37 @@ class VolumeMeter extends React.Component {
           threshold={threshold}
           width={volume}
         />
+        {logined && stream && <Recorder />}
       </div>
     )
   }
 }
 
 VolumeMeter.propTypes = {
-  dispatch: PropTypes.func,
-  record: PropTypes.bool.isRequired
+  startRecord: PropTypes.func.isRequired,
+  updateStream: PropTypes.func.isRequired,
+  record: PropTypes.bool.isRequired,
+  logined: PropTypes.bool.isRequired
 }
 
 const mapStateToProps = state => {
   return {
-    record: state.Recorder.record
+    record: state.Recorder.record,
+    logined: state.LoginManager.logined
   }
 }
 
-export default connect(mapStateToProps)(VolumeMeter)
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators(
+    {
+      startRecord,
+      updateStream
+    },
+    dispatch
+  )
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(VolumeMeter)

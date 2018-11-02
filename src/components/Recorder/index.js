@@ -21,15 +21,19 @@ class Recorder extends React.Component {
     this.recorder.mimeType = 'audio/wav'
     this.recorder.audioChannels = 1
     this.recorder.ondataavailable = blob => {
+      this.recorder.stop()
       this.handleBlob(blob)
     }
     this.setState({ ready: true })
   }
-
-  shouldComponentUpdate = nextProps => {
-    if (nextProps.record && !this.state.record) {
-      this.recorder.start(3000)
+  componentDidUpdate = prevProps => {
+    const { record } = this.props
+    if (prevProps.record === record) {
+      return
+    }
+    if (record && !this.state.record) {
       this.setState({ record: true })
+      this.recorder.start(4000)
     }
   }
 
@@ -46,6 +50,7 @@ class Recorder extends React.Component {
       .finally(() => this.handleStop())
   }
   handleStop = () => {
+    this.recorder.stop()
     this.setState({ record: false })
     this.props.stopRecord()
   }
