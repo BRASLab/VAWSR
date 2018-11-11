@@ -15,11 +15,15 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "predeploy": "yarn build",
+    "deploy": "gh-pages -d build",
+    "deploy:travis": "yarn predeploy && gh-pages --repo https://$GH_TOKEN@$GH_REF -d build",
     "lint": "eslint . --ext .js --fix",
     "test": "react-scripts test --env=jsdom",
-    "coverage": "npm test -- --coverage",
-    "codecov": "npm run coverage && codecov",
-    "eject": "react-scripts eject"
+    "coverage": "yarn test --coverage",
+    "codecov": "yarn run coverage && codecov",
+    "eject": "react-scripts eject",
+	"a": "gh-pages --help"
   },
   "dependencies": {
     "@material-ui/core": "^3.1.1",
@@ -36,7 +40,7 @@
     "react-i18next": "^7.12.0",
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "1.1.5",
+    "react-scripts": "^2.1.1",
     "react-toastify": "^4.4.0",
     "redux": "^4.0.0",
     "styled-components": "^3.4.9",
@@ -44,18 +48,23 @@
   },
   "devDependencies": {
     "axios-mock-adapter": "^1.15.0",
-    "babel-eslint": "^8.2.6",
     "codecov": "^3.1.0",
     "enzyme": "^3.7.0",
     "enzyme-adapter-react-16": "^1.6.0",
-    "eslint": "^4.19.1",
     "eslint-config-prettier": "^3.0.1",
     "eslint-plugin-jest": "^21.22.0",
     "eslint-plugin-prettier": "^2.6.2",
     "eslint-plugin-react": "^7.11.1",
+    "gh-pages": "^2.0.1",
     "jest": "^23.6.0",
     "js-beautify": "^1.8.6",
     "prettier": "^1.14.2",
     "redux-mock-store": "^1.5.3"
-  }
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }
