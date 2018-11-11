@@ -1,6 +1,15 @@
 {
-  "main.css": "static/css/main.588a2535.css",
-  "main.css.map": "static/css/main.588a2535.css.map",
-  "main.js": "static/js/main.66a0da2b.js",
-  "main.js.map": "static/js/main.66a0da2b.js.map"
+  "main.css": "/VAWSR/static/css/main.138319ba.chunk.css",
+  "main.js": "/VAWSR/static/js/main.53da9c10.chunk.js",
+  "main.js.map": "/VAWSR/static/js/main.53da9c10.chunk.js.map",
+  "static/css/1.cf46eff9.chunk.css": "/VAWSR/static/css/1.cf46eff9.chunk.css",
+  "static/js/1.4f7634d4.chunk.js": "/VAWSR/static/js/1.4f7634d4.chunk.js",
+  "static/js/1.4f7634d4.chunk.js.map": "/VAWSR/static/js/1.4f7634d4.chunk.js.map",
+  "runtime~main.js": "/VAWSR/static/js/runtime~main.16d56a44.js",
+  "runtime~main.js.map": "/VAWSR/static/js/runtime~main.16d56a44.js.map",
+  "static/css/main.138319ba.chunk.css.map": "/VAWSR/static/css/main.138319ba.chunk.css.map",
+  "static/css/1.cf46eff9.chunk.css.map": "/VAWSR/static/css/1.cf46eff9.chunk.css.map",
+  "index.html": "/VAWSR/index.html",
+  "precache-manifest.adb39d2e61f0c0e67cdc2e3b3094c0d6.js": "/VAWSR/precache-manifest.adb39d2e61f0c0e67cdc2e3b3094c0d6.js",
+  "service-worker.js": "/VAWSR/service-worker.js"
 }
