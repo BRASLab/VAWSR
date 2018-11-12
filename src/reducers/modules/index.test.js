@@ -1,25 +1,59 @@
-import ASR from './ASR'
+import Websocket from './Websocket'
 import LoginManager from './LoginManager'
 import Recorder from './Recorder'
 import Host from './Host'
 
-describe('ASR reducer', () => {
+describe('Websocket reducer', () => {
+  const initialState = {
+    connected: false,
+    responses: [],
+    google: '',
+    kaldi: ''
+  }
   it('should return the initial state', () => {
-    const initialState = { verified: false }
-    expect(ASR(undefined, {})).toEqual(initialState)
+    expect(Websocket(undefined, {})).toEqual(initialState)
   })
 
-  it('should handle SPEAKER_RECONGNITION', () => {
-    const expired = new Date()
+  it('should handle ON_CONNECT', () => {
     expect(
-      ASR([], {
-        type: 'SPEAKER_RECONGNITION',
-        expired
+      Websocket(undefined, {
+        type: 'ON_CONNECT'
       })
-    ).toEqual({
-      verified: true,
-      expired
-    })
+    ).toEqual({ ...initialState, connected: true })
+  })
+
+  it('should handle TRANSCRIPT_GOOGLE', () => {
+    expect(
+      Websocket(undefined, {
+        type: 'TRANSCRIPT_GOOGLE',
+        transcript_google: 'test'
+      })
+    ).toEqual({ ...initialState, google: 'test' })
+  })
+
+  it('should handle TRANSCRIPT_KALDI', () => {
+    expect(
+      Websocket(undefined, {
+        type: 'TRANSCRIPT_KALDI',
+        transcript_kaldi: 'test'
+      })
+    ).toEqual({ ...initialState, kaldi: 'test' })
+  })
+
+  it('should handle STOP_STREAM', () => {
+    const proba = 0.8
+    const result = ''
+    const expectedState = {
+      ...initialState,
+      responses: [{ google: '', kaldi: '', proba, result }]
+    }
+    expect(
+      Websocket(undefined, {
+        type: 'STOP_STREAM',
+        proba,
+        result
+      })
+    ).toEqual(expectedState)
   })
 })
 

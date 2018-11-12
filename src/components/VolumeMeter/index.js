@@ -4,8 +4,8 @@ import Cookies from 'universal-cookie'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import PropTypes from 'prop-types'
-import Recorder from '../Recorder'
-import { startRecord, updateStream } from '../../actions/Recorder'
+import Websocket from '../Websocket'
+import { startRecord, stopRecord, updateStream } from '../../actions/Recorder'
 
 class VolumeMeter extends React.Component {
   constructor(props) {
@@ -64,10 +64,13 @@ class VolumeMeter extends React.Component {
     this.setState({
       volume: Number(percentage.toFixed(2))
     })
-    const { startRecord, record, logined } = this.props
+    const { startRecord, stopRecord, record, logined } = this.props
     const { stream, threshold } = this.state
     if (logined && stream && percentage >= threshold && !record) {
       startRecord()
+    }
+    if (record && percentage < threshold) {
+      stopRecord()
     }
   }
 
@@ -119,7 +122,7 @@ class VolumeMeter extends React.Component {
           threshold={threshold}
           width={volume}
         />
-        {logined && stream && <Recorder />}
+        {logined && stream && <Websocket />}
       </div>
     )
   }
@@ -127,6 +130,7 @@ class VolumeMeter extends React.Component {
 
 VolumeMeter.propTypes = {
   startRecord: PropTypes.func.isRequired,
+  stopRecord: PropTypes.func.isRequired,
   updateStream: PropTypes.func.isRequired,
   record: PropTypes.bool.isRequired,
   logined: PropTypes.bool.isRequired
@@ -143,6 +147,7 @@ const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       startRecord,
+      stopRecord,
       updateStream
     },
     dispatch

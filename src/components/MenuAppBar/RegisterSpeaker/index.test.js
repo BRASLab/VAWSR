@@ -8,7 +8,7 @@ import configureStore from 'redux-mock-store'
 import MockAdapter from 'axios-mock-adapter'
 import MenuItem from '@material-ui/core/MenuItem'
 import axios from 'axios'
-import { promiseDelay } from '../../../utils'
+import { promiseDelay, range } from '../../../utils'
 import { toast } from 'react-toastify'
 
 describe('component <RegisterSpeaker />', () => {
@@ -26,7 +26,6 @@ describe('component <RegisterSpeaker />', () => {
   let initialState
   let store
   let mock = new MockAdapter(axios)
-  const blob = new Blob()
 
   it('renders without crashing', () => {
     initialState = {
@@ -76,30 +75,27 @@ describe('component <RegisterSpeaker />', () => {
     let error = 'test'
     mock.onGet(`${hostname}/sentences.json`).reply(401, error)
     app.instance().generateSentences()
-    await promiseDelay(300)
+    await promiseDelay(100)
     expect(toast.error).toBeCalledWith('取得語料失敗，請檢查登入是否過期')
   })
 
   it('should handle handleClick && generateSentences', async () => {
-    mock
-      .onGet(`${hostname}/sentences.json`)
-      .reply(200, { sentences: ['123', '456', '789'] })
+    let sentences = range(10, true)
+    mock.onGet(`${hostname}/sentences.json`).reply(200, { sentences })
     app.find(MenuItem).simulate('click')
     await promiseDelay(100)
-    expect(app.state('sentences')).toEqual(['123', '456', '789'])
+    expect(app.state('sentences')).toEqual(sentences)
   })
 
   it('should handle handleURL && handleNext', () => {
+    const blob = new Blob()
+    for (let i = 0; i < 9; i++) {
+      app.instance().handleURL(blob)
+      expect(app.state().audioBlob[String(i)]).toEqual(blob)
+      app.instance().handleNext()
+    }
     app.instance().handleURL(new Blob())
-    expect(app.state().audioBlob['0']).toEqual(blob)
-    app.instance().handleNext()
-
-    app.instance().handleURL(new Blob())
-    expect(app.state().audioBlob['1']).toEqual(blob)
-    app.instance().handleNext()
-
-    app.instance().handleURL(new Blob())
-    expect(app.state().audioBlob['2']).toEqual(blob)
+    expect(app.state().audioBlob['9']).toEqual(blob)
   })
 
   it('should handle replayBlob', () => {

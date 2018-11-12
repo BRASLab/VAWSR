@@ -77,14 +77,14 @@ export class RegisterSpeaker extends React.Component {
   }
 
   handleNext = () => {
-    if (this.state.step < 2) {
+    if (this.state.step < 9) {
       this.setState(prevState => ({ step: prevState.step + 1 }))
     } else {
       const { hostname } = this.props
       this.setState({ loading: true })
       var fd = new FormData()
       // eslint-disable-next-line
-      for(let i = 0; i < 3; i++){
+      for(let i = 0; i < 10; i++){
         fd.append(`file${i + 1}`, this.state.audioBlob[i], `file${i + 1}.wav`)
       }
       axios
@@ -167,7 +167,7 @@ export class RegisterSpeaker extends React.Component {
                 color="inherit"
                 autoFocus
                 disabled={!audioBlob[step] || loading}>
-                {step === 2 ? 'Finish' : 'Next'}
+                {step === 9 ? 'Finish' : 'Next'}
                 {loading && (
                   <CircularProgress
                     size={24}
