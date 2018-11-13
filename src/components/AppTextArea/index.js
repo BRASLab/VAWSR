@@ -24,12 +24,6 @@ class AppTextArea extends Component {
       <TextArea>
         {responseItem}
         <Response google={google} kaldi={kaldi} proba={0} result={''} />
-        <Response google={'google'} kaldi={'kaldi'} proba={0} result={'11'} />
-        <Response google={'google'} kaldi={'kaldi'} proba={0} result={'11'} />
-        <Response google={'google'} kaldi={'kaldi'} proba={0} result={'11'} />
-        <Response google={'google'} kaldi={'kaldi'} proba={0} result={'11'} />
-        <Response google={'google'} kaldi={'kaldi'} proba={0} result={'11'} />
-        <Response google={'google'} kaldi={'kaldi'} proba={0} result={'11'} />
       </TextArea>
     )
   }

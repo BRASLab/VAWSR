@@ -20,7 +20,10 @@ const styles = theme => ({
   },
   margin: {
     margin: theme.spacing.unit,
-    width: '80%'
+    width: '80%',
+    [theme.breakpoints.up('md')]: {
+      width: '40%'
+    }
   },
   marginLeft: {
     'margin-left': 'auto'
