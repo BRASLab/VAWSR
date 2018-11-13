@@ -47,7 +47,6 @@ class Websocket extends React.Component {
 
   registerEvents = () => {
     this.socket.on('google_speech_data', ({ transcript, is_final }) => {
-      console.log(transcript)
       if (is_final) {
         this.setState(prevState => {
           return { google: [...prevState.google, transcript] }
@@ -64,10 +63,6 @@ class Websocket extends React.Component {
     })
 
     this.socket.on('stop_stream', ({ proba, result }) => {
-      /**
-       * Now testing
-       */
-      console.log(proba)
       const { stop_stream } = this.props
       this.setState({ google: [] })
       stop_stream(proba, result)

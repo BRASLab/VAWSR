@@ -19,10 +19,14 @@ import Slide from '@material-ui/core/Slide'
 import { connect } from 'react-redux'
 import { toast } from 'react-toastify'
 import axios from 'axios'
+import MobileStepper from '@material-ui/core/MobileStepper'
 
 import Record from './Record'
 
 const styles = theme => ({
+  dots: {
+    backgroundColor: 'inherit'
+  },
   button: {
     margin: theme.spacing.unit,
     float: 'right'
@@ -159,22 +163,33 @@ export class RegisterSpeaker extends React.Component {
               <Typography variant="h6" color="inherit" className={classes.flex}>
                 語者設定
               </Typography>
-              <Button onClick={this.handleBack} color="inherit">
-                Back
-              </Button>
-              <Button
-                onClick={this.handleNext}
-                color="inherit"
-                autoFocus
-                disabled={!audioBlob[step] || loading}>
-                {step === 9 ? 'Finish' : 'Next'}
-                {loading && (
-                  <CircularProgress
-                    size={24}
-                    className={classes.buttonProgress}
-                  />
-                )}
-              </Button>
+              <MobileStepper
+                className={classes.dots}
+                variant="dots"
+                steps={10}
+                position="static"
+                activeStep={step}
+                backButton={
+                  <Button onClick={this.handleBack} color="inherit">
+                    Back
+                  </Button>
+                }
+                nextButton={
+                  <Button
+                    onClick={this.handleNext}
+                    color="inherit"
+                    autoFocus
+                    disabled={!audioBlob[step] || loading}>
+                    {step === 9 ? 'Finish' : 'Next'}
+                    {loading && (
+                      <CircularProgress
+                        size={24}
+                        className={classes.buttonProgress}
+                      />
+                    )}
+                  </Button>
+                }
+              />
             </Toolbar>
           </AppBar>
           <DialogTitle id="responsive-dialog-title">
