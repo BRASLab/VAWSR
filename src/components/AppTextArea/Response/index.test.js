@@ -1,16 +1,21 @@
 import React from 'react'
 import Response from './index.js'
-import { shallow } from 'enzyme'
+jest.mock('@fortawesome/react-fontawesome', () => {
+  return {
+    FontAwesomeIcon: jest.fn(() => <div />)
+  }
+})
+import { mount } from 'enzyme'
 
-describe('component <App />', () => {
+describe('component <Response />', () => {
   it('renders without crashing', () => {
-    shallow(
+    mount(
       <Response
         google={'google'}
         kaldi={'kaldi'}
         proba={0.8}
         result={'result'}
       />
-    )
+    ).debug()
   })
 })
