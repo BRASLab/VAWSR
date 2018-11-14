@@ -20,8 +20,10 @@ import { connect } from 'react-redux'
 import { toast } from 'react-toastify'
 import axios from 'axios'
 import MobileStepper from '@material-ui/core/MobileStepper'
+import { bindActionCreators } from 'redux'
 
 import Record from './Record'
+import { resume, suspend } from '../../../actions/Recorder'
 
 const styles = theme => ({
   dots: {
@@ -62,12 +64,15 @@ export class RegisterSpeaker extends React.Component {
   }
 
   handleClick = () => {
+    const { suspend } = this.props
+    suspend()
     this.generateSentences()
     this.setState({ open: true })
   }
 
   handleClose = () => {
-    const { callback } = this.props
+    const { callback, resume } = this.props
+    resume()
     this.setState({ open: false })
     callback()
   }
@@ -220,7 +225,9 @@ RegisterSpeaker.propTypes = {
   classes: PropTypes.object.isRequired,
   callback: PropTypes.func.isRequired,
   hasivector: PropTypes.bool.isRequired,
-  hostname: PropTypes.string.isRequired
+  hostname: PropTypes.string.isRequired,
+  resume: PropTypes.func.isRequired,
+  suspend: PropTypes.func.isRequired
 }
 const mapStateToProps = state => {
   return {
@@ -229,4 +236,11 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps)(withStyles(styles)(RegisterSpeaker))
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators({ resume, suspend }, dispatch)
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(RegisterSpeaker))

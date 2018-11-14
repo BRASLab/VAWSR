@@ -16,3 +16,15 @@ export const updateStream = stream => {
     stream
   }
 }
+
+export const resume = () => {
+  return {
+    type: 'RESUME_VOLUMEMETER'
+  }
+}
+
+export const suspend = () => {
+  return {
+    type: 'SUSPEND_VOLUMEMETER'
+  }
+}

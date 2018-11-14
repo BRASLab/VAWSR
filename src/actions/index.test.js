@@ -48,6 +48,20 @@ describe('actions Recorder', () => {
     }
     expect(Recorder.updateStream(stream)).toEqual(expectedAction)
   })
+
+  it('should create an action to resume', () => {
+    const expectedAction = {
+      type: 'RESUME_VOLUMEMETER'
+    }
+    expect(Recorder.resume()).toEqual(expectedAction)
+  })
+
+  it('should create an action to suspend', () => {
+    const expectedAction = {
+      type: 'SUSPEND_VOLUMEMETER'
+    }
+    expect(Recorder.suspend()).toEqual(expectedAction)
+  })
 })
 
 describe('actions Websocket', () => {

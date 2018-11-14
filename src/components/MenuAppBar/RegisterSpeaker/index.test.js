@@ -26,6 +26,8 @@ describe('component <RegisterSpeaker />', () => {
   let initialState
   let store
   let mock = new MockAdapter(axios)
+  let resume = jest.fn()
+  let suspend = jest.fn()
 
   it('renders without crashing', () => {
     initialState = {
@@ -50,6 +52,8 @@ describe('component <RegisterSpeaker />', () => {
         hostname={hostname}
         classes={classes}
         callback={callback}
+        suspend={suspend}
+        resume={resume}
       />
     )
     expect(app.find('p').text()).toBe('重新註冊語者')
@@ -63,6 +67,8 @@ describe('component <RegisterSpeaker />', () => {
         hostname={hostname}
         classes={classes}
         callback={callback2}
+        suspend={suspend}
+        resume={resume}
       />
     )
     app2.instance().handleNext()
@@ -121,5 +127,10 @@ describe('component <RegisterSpeaker />', () => {
     app.instance().handleNext()
     await promiseDelay(100)
     expect(toast.success).toBeCalledWith('語者註冊成功')
+  })
+
+  it('should be called', () => {
+    expect(suspend).toBeCalled()
+    expect(resume).toBeCalled()
   })
 })

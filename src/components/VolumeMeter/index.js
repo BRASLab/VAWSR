@@ -64,8 +64,13 @@ class VolumeMeter extends React.Component {
     this.setState({
       volume: Number(percentage.toFixed(2))
     })
-    const { startRecord, stopRecord, record, logined } = this.props
+    const { startRecord, stopRecord, record, logined, suspended } = this.props
     const { stream, threshold } = this.state
+    if (suspended && record) {
+      stopRecord()
+      return
+    }
+    if (suspended) return
     if (logined && stream && percentage >= threshold && !record) {
       startRecord()
     }
@@ -133,12 +138,14 @@ VolumeMeter.propTypes = {
   stopRecord: PropTypes.func.isRequired,
   updateStream: PropTypes.func.isRequired,
   record: PropTypes.bool.isRequired,
-  logined: PropTypes.bool.isRequired
+  logined: PropTypes.bool.isRequired,
+  suspended: PropTypes.bool.isRequired
 }
 
 const mapStateToProps = state => {
   return {
     record: state.Recorder.record,
+    suspended: state.Recorder.suspended,
     logined: state.LoginManager.logined
   }
 }

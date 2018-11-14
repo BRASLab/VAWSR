@@ -18,7 +18,7 @@ import { bindActionCreators } from 'redux'
 import { toast } from 'react-toastify'
 
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
-import { login, logout } from '../../actions'
+import { login, logout } from '../../actions/LoginManager'
 import RegisterSpeaker from './RegisterSpeaker'
 import axios from 'axios'
 
