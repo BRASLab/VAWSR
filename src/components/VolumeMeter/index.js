@@ -16,7 +16,8 @@ class VolumeMeter extends React.Component {
       src: null,
       volume: 0,
       threshold: 50,
-      stream: false
+      stream: false,
+      stopTimeout: 0
     }
     this.cookie = new Cookies()
   }
@@ -65,7 +66,7 @@ class VolumeMeter extends React.Component {
       volume: Number(percentage.toFixed(2))
     })
     const { startRecord, stopRecord, record, logined, suspended } = this.props
-    const { stream, threshold } = this.state
+    const { stream, threshold, stopTimeout } = this.state
     if (suspended && record) {
       stopRecord()
       return
@@ -75,7 +76,11 @@ class VolumeMeter extends React.Component {
       startRecord()
     }
     if (record && percentage < threshold) {
-      stopRecord()
+      if (stopTimeout > 10) {
+        this.setState({ stopTimeout: 0 })
+        stopRecord()
+      }
+      this.setState(prevState => ({ stopTimeout: prevState.stopTimeout + 1 }))
     }
   }
 

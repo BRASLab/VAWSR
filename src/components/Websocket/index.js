@@ -23,7 +23,6 @@ class Websocket extends React.Component {
 
     this.processor = context.createScriptProcessor(2048, 1, 1)
     this.processor.connect(context.destination)
-    context.suspend()
     this.input = context.createMediaStreamSource(stream)
     this.input.connect(this.processor)
 
@@ -38,9 +37,7 @@ class Websocket extends React.Component {
   componentDidUpdate = prevProps => {
     const { record } = this.props
     if (prevProps.record === record) return
-    if (record) {
-      this.startRecording()
-    } else {
+    if (!record) {
       this.stopRecording()
     }
   }
@@ -69,22 +66,38 @@ class Websocket extends React.Component {
     })
   }
 
-  startRecording = () => {
-    const { context } = this.state
-    this.socket.emit('start_stream', '')
-    context.resume()
-  }
-
   stopRecording = () => {
-    const { context } = this.state
-    context.suspend()
     this.socket.emit('stop_stream', '')
   }
 
   microphoneProcess = e => {
     var left = e.inputBuffer.getChannelData(0)
-    var left16 = this.downsampleBuffer(left, 44100, 16000)
+    var left16 = this.floatTo16BitPCM(left)
     this.socket.emit('binary_data', left16)
+  }
+
+  floatTo16BitPCM = buffer => {
+    let result = new Int16Array(buffer.length)
+    let offsetResult = 0
+    let offsetBuffer = 0
+    while (offsetResult < result.length) {
+      let nextOffsetBuffer = offsetResult + 1
+      let accum = 0,
+        count = 0
+      for (
+        let i = offsetBuffer;
+        i < nextOffsetBuffer && i < buffer.length;
+        i++
+      ) {
+        accum += buffer[i]
+        count++
+      }
+
+      result[offsetResult] = Math.min(1, accum / count) * 0x7fff
+      offsetResult++
+      offsetBuffer = nextOffsetBuffer
+    }
+    return result.buffer
   }
 
   downsampleBuffer = (buffer, sampleRate, outSampleRate) => {
