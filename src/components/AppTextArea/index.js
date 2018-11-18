@@ -14,6 +14,16 @@ const TextArea = styled.div`
 `
 
 class AppTextArea extends Component {
+  componentDidMount() {
+    this.scrollToBottom()
+  }
+  componentDidUpdate() {
+    this.scrollToBottom()
+  }
+  scrollToBottom() {
+    this.el.scrollTop = this.el.scrollTopMax
+  }
+
   render() {
     const { google, kaldi, responses } = this.props
     let responseItem = []
@@ -21,7 +31,10 @@ class AppTextArea extends Component {
       responseItem.push(<Response key={i} {...responses[i]} />)
     }
     return (
-      <TextArea>
+      <TextArea
+        innerRef={el => {
+          this.el = el
+        }}>
         {responseItem}
         <Response google={google} kaldi={kaldi} proba={0} result={''} />
       </TextArea>
