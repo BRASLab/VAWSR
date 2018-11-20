@@ -36,7 +36,7 @@ class AppTextArea extends Component {
           this.el = el
         }}>
         {responseItem}
-        <Response google={google} kaldi={kaldi} proba={0} result={''} />
+        <Response google={google} kaldi={kaldi} proba={0} text={''} url={''} />
       </TextArea>
     )
   }

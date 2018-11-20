@@ -18,10 +18,11 @@ export const update_kaldi = transcript_kaldi => {
   }
 }
 
-export const stop_stream = (proba, result) => {
+export const stop_stream = (proba, { text, url }) => {
   return {
     type: 'STOP_STREAM',
     proba,
-    result
+    text,
+    url
   }
 }

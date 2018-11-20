@@ -1,5 +1,7 @@
 import React from 'react'
 import Response from './index.js'
+import TextField from '@material-ui/core/TextField'
+
 jest.mock('@fortawesome/react-fontawesome', () => {
   return {
     FontAwesomeIcon: jest.fn(() => <div />)
@@ -8,14 +10,26 @@ jest.mock('@fortawesome/react-fontawesome', () => {
 import { mount } from 'enzyme'
 
 describe('component <Response />', () => {
+  let app
+  let url = 'https://example.com'
   it('renders without crashing', () => {
-    mount(
+    app = mount(
       <Response
         google={'google'}
         kaldi={'kaldi'}
         proba={0.8}
-        result={'result'}
+        text={'text'}
+        url={url}
       />
-    ).debug()
+    )
+  })
+
+  it('handle method handleClick', () => {
+    window.open = jest.fn()
+    app
+      .find(TextField)
+      .at(2)
+      .simulate('click')
+    expect(window.open).toBeCalledWith(url, '_blank')
   })
 })

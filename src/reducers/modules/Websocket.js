@@ -23,7 +23,8 @@ const Websocket = (
         google: state.google,
         kaldi: state.kaldi,
         proba: action.proba,
-        result: action.result
+        text: action.text,
+        url: action.url
       })
       return {
         ...state,

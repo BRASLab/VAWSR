@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import classNames from 'classnames'
@@ -34,73 +34,83 @@ const styles = theme => ({
   }
 })
 
-function Response(props) {
-  const { classes, google, kaldi, proba, result } = props
-  return (
-    <div>
-      {google && (
-        <div className={classes.flex}>
-          <TextField
-            className={classes.margin}
-            label="Google"
-            defaultValue={google}
-            variant="outlined"
-            multiline
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <FontAwesomeIcon icon={['fab', 'google']} />
-                </InputAdornment>
-              ),
-              readOnly: true
-            }}
-          />
-        </div>
-      )}
-      {kaldi && (
-        <div className={classes.flex}>
-          <TextField
-            className={classes.margin}
-            label="Kaldi"
-            defaultValue={kaldi}
-            multiline
-            variant="outlined"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <FontAwesomeIcon
-                    className={classes.k_margin}
-                    icon={['fab', 'kaggle']}
-                  />
-                </InputAdornment>
-              ),
-              readOnly: true
-            }}
-          />
-        </div>
-      )}
-      {result && (
-        <div className={classes.flexRight}>
-          <TextField
-            className={classNames(classes.margin, classes.marginLeft)}
-            label={`The probability: ${proba}`}
-            defaultValue={result}
-            multiline
-            variant="outlined"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <FontAwesomeIcon icon={['fas', 'robot']} />
-                </InputAdornment>
-              ),
-              readOnly: true
-            }}
-          />
-        </div>
-      )}
-      {result && <Divider className={classes.clear} />}
-    </div>
-  )
+class Response extends Component {
+  handleClick = () => {
+    const { url } = this.props
+    if (url) {
+      window.open(url, '_blank')
+    }
+  }
+
+  render() {
+    const { classes, google, kaldi, proba, text, url } = this.props
+    return (
+      <div>
+        {google && (
+          <div className={classes.flex}>
+            <TextField
+              className={classes.margin}
+              label="Google"
+              defaultValue={google}
+              variant="outlined"
+              multiline
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <FontAwesomeIcon icon={['fab', 'google']} />
+                  </InputAdornment>
+                ),
+                readOnly: true
+              }}
+            />
+          </div>
+        )}
+        {kaldi && (
+          <div className={classes.flex}>
+            <TextField
+              className={classes.margin}
+              label="Kaldi"
+              defaultValue={kaldi}
+              multiline
+              variant="outlined"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <FontAwesomeIcon
+                      className={classes.k_margin}
+                      icon={['fab', 'kaggle']}
+                    />
+                  </InputAdornment>
+                ),
+                readOnly: true
+              }}
+            />
+          </div>
+        )}
+        {text && (
+          <div className={classes.flexRight}>
+            <TextField
+              className={classNames(classes.margin, classes.marginLeft)}
+              label={`The probability: ${proba}`}
+              defaultValue={text + url}
+              multiline
+              variant="outlined"
+              onClick={this.handleClick}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <FontAwesomeIcon icon={['fas', 'robot']} />
+                  </InputAdornment>
+                ),
+                readOnly: true
+              }}
+            />
+          </div>
+        )}
+        {text && <Divider className={classes.clear} />}
+      </div>
+    )
+  }
 }
 
 Response.propTypes = {
@@ -108,7 +118,8 @@ Response.propTypes = {
   google: PropTypes.string.isRequired,
   kaldi: PropTypes.string.isRequired,
   proba: PropTypes.number,
-  result: PropTypes.string
+  url: PropTypes.string,
+  text: PropTypes.string
 }
 
 export default withStyles(styles)(Response)
