@@ -39,17 +39,21 @@ describe('Websocket reducer', () => {
 
   it('should handle STOP_STREAM', () => {
     const proba = 0.8
+    const google = 'google'
+    const kaldi = 'kaldi'
     const result = {
       text: '123',
       url: '456'
     }
     const expectedState = {
       ...initialState,
-      responses: [{ google: '', kaldi: '', proba, ...result }]
+      responses: [{ google, kaldi, proba, ...result }]
     }
     expect(
       Websocket(undefined, {
         type: 'STOP_STREAM',
+        google,
+        kaldi,
         proba,
         ...result
       })

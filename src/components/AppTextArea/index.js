@@ -21,7 +21,7 @@ class AppTextArea extends Component {
     this.scrollToBottom()
   }
   scrollToBottom() {
-    this.el.scrollTop = this.el.scrollTopMax
+    this.el.scrollTop = this.el.scrollTopMax + 1000
   }
 
   render() {

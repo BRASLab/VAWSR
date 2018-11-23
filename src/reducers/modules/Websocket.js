@@ -20,8 +20,8 @@ const Websocket = (
       }
     case 'STOP_STREAM':
       state.responses.push({
-        google: state.google,
-        kaldi: state.kaldi,
+        google: action.google,
+        kaldi: action.kaldi,
         proba: action.proba,
         text: action.text,
         url: action.url

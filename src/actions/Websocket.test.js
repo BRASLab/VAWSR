@@ -28,12 +28,18 @@ describe('actions Websocket', () => {
 
   it('should create an action to Websocket STOP_STREAM', () => {
     const proba = 0.8
+    const google = 'google'
+    const kaldi = 'kaldi'
     const result = { text: '123', url: '456' }
     const expectedAction = {
       type: 'STOP_STREAM',
+      google,
+      kaldi,
       proba,
       ...result
     }
-    expect(Websocket.stop_stream(proba, result)).toEqual(expectedAction)
+    expect(Websocket.stop_stream(google, kaldi, proba, result)).toEqual(
+      expectedAction
+    )
   })
 })

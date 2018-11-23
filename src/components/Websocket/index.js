@@ -13,7 +13,6 @@ import { tify } from 'chinese-conv'
 
 class Websocket extends React.Component {
   state = {
-    google: [],
     context: new AudioContext()
   }
   componentDidMount = () => {
@@ -22,7 +21,7 @@ class Websocket extends React.Component {
     this.socket = socket('wss://vawsr.mino.tw/ws')
     on_connect()
 
-    this.processor = context.createScriptProcessor(2048, 1, 1)
+    this.processor = context.createScriptProcessor(8192, 1, 1)
     this.processor.connect(context.destination)
     this.input = context.createMediaStreamSource(stream)
     this.input.connect(this.processor)
@@ -44,15 +43,9 @@ class Websocket extends React.Component {
   }
 
   registerEvents = () => {
-    this.socket.on('google_speech_data', ({ transcript, is_final }) => {
-      if (is_final) {
-        this.setState(prevState => {
-          return { google: [...prevState.google, transcript] }
-        })
-      }
-      const { google } = this.state
+    this.socket.on('google_speech_data', ({ transcript }) => {
       const { update_google } = this.props
-      update_google(google.reduce((x, y) => x + ' ' + y, '') + transcript)
+      update_google(transcript)
     })
 
     this.socket.on('kaldi_speech_data', ({ transcript }) => {
@@ -60,10 +53,9 @@ class Websocket extends React.Component {
       update_kaldi(tify(transcript.replace(/ /g, '')))
     })
 
-    this.socket.on('stop_stream', ({ proba, result }) => {
+    this.socket.on('stop_stream', ({ google, kaldi, proba, result }) => {
       const { stop_stream } = this.props
-      this.setState({ google: [] })
-      stop_stream(proba, result)
+      stop_stream(google, tify(kaldi.replace(/ /g, '')), proba, result)
     })
   }
 
