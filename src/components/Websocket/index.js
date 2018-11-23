@@ -9,6 +9,7 @@ import {
   update_kaldi,
   stop_stream
 } from '../../actions/Websocket'
+import { tify } from 'chinese-conv'
 
 class Websocket extends React.Component {
   state = {
@@ -56,7 +57,7 @@ class Websocket extends React.Component {
 
     this.socket.on('kaldi_speech_data', ({ transcript }) => {
       const { update_kaldi } = this.props
-      update_kaldi(transcript)
+      update_kaldi(tify(transcript.replace(/ /g, '')))
     })
 
     this.socket.on('stop_stream', ({ proba, result }) => {
