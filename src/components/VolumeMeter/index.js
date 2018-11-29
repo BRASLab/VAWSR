@@ -47,6 +47,20 @@ class VolumeMeter extends React.Component {
   }
 
   loop = () => {
+    const {
+      startRecord,
+      stopRecord,
+      record,
+      logined,
+      suspended,
+      hasivector
+    } = this.props
+    const { stream, threshold, stopTimeout } = this.state
+    if (!logined || !stream || !hasivector) return
+    if (suspended) {
+      stopRecord()
+      return
+    }
     this.analyser.getByteTimeDomainData(this.array)
     var total = 0,
       i = 0,
@@ -65,17 +79,14 @@ class VolumeMeter extends React.Component {
     this.setState({
       volume: Number(percentage.toFixed(2))
     })
-    const { startRecord, stopRecord, record, logined, suspended } = this.props
-    const { stream, threshold, stopTimeout } = this.state
-    if (suspended && record) {
-      stopRecord()
-      return
-    }
-    if (suspended) return
-    if (logined && stream && percentage >= threshold && !record) {
-      startRecord()
-    }
-    if (record && percentage < threshold) {
+
+    if (percentage >= threshold) {
+      this.setState({ stopTimeout: 0 })
+      if (!record) {
+        startRecord()
+      }
+    } else {
+      if (!record) return
       if (stopTimeout > 10) {
         this.setState({ stopTimeout: 0 })
         stopRecord()
@@ -145,14 +156,16 @@ VolumeMeter.propTypes = {
   updateStream: PropTypes.func.isRequired,
   record: PropTypes.bool.isRequired,
   logined: PropTypes.bool.isRequired,
-  suspended: PropTypes.bool.isRequired
+  suspended: PropTypes.bool.isRequired,
+  hasivector: PropTypes.bool.isRequired
 }
 
 const mapStateToProps = state => {
   return {
     record: state.Recorder.record,
     suspended: state.Recorder.suspended,
-    logined: state.LoginManager.logined
+    logined: state.LoginManager.logined,
+    hasivector: state.LoginManager.hasivector
   }
 }
 
