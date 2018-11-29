@@ -1,7 +1,7 @@
 {
   "main.css": "/VAWSR/static/css/main.117b6f0c.chunk.css",
-  "main.js": "/VAWSR/static/js/main.d4ee991f.chunk.js",
-  "main.js.map": "/VAWSR/static/js/main.d4ee991f.chunk.js.map",
+  "main.js": "/VAWSR/static/js/main.c0c37f1b.chunk.js",
+  "main.js.map": "/VAWSR/static/js/main.c0c37f1b.chunk.js.map",
   "static/css/1.6c45612a.chunk.css": "/VAWSR/static/css/1.6c45612a.chunk.css",
   "static/js/1.19c90df0.chunk.js": "/VAWSR/static/js/1.19c90df0.chunk.js",
   "static/js/1.19c90df0.chunk.js.map": "/VAWSR/static/js/1.19c90df0.chunk.js.map",
@@ -10,6 +10,6 @@
   "static/css/1.6c45612a.chunk.css.map": "/VAWSR/static/css/1.6c45612a.chunk.css.map",
   "static/css/main.117b6f0c.chunk.css.map": "/VAWSR/static/css/main.117b6f0c.chunk.css.map",
   "index.html": "/VAWSR/index.html",
-  "precache-manifest.1b0144d71fd261d9ae5cfffe56bea12a.js": "/VAWSR/precache-manifest.1b0144d71fd261d9ae5cfffe56bea12a.js",
+  "precache-manifest.c94b9b51a4236e1ed0d15cbd2ede58de.js": "/VAWSR/precache-manifest.c94b9b51a4236e1ed0d15cbd2ede58de.js",
   "service-worker.js": "/VAWSR/service-worker.js"
 }
