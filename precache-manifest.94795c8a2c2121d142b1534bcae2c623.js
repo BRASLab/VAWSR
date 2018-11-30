@@ -4,15 +4,15 @@ self.__precacheManifest = [
     "url": "/VAWSR/static/js/runtime~main.16d56a44.js"
   },
   {
-    "revision": "d781ec31b4a98f604649",
-    "url": "/VAWSR/static/js/main.d781ec31.chunk.js"
+    "revision": "ceaca4ae86d61c9c9cbc",
+    "url": "/VAWSR/static/js/main.ceaca4ae.chunk.js"
   },
   {
     "revision": "19c90df0db8e3d7a90b5",
     "url": "/VAWSR/static/js/1.19c90df0.chunk.js"
   },
   {
-    "revision": "d781ec31b4a98f604649",
+    "revision": "ceaca4ae86d61c9c9cbc",
     "url": "/VAWSR/static/css/main.117b6f0c.chunk.css"
   },
   {
@@ -20,7 +20,7 @@ self.__precacheManifest = [
     "url": "/VAWSR/static/css/1.6c45612a.chunk.css"
   },
   {
-    "revision": "e2b428e5ec5d7200e8aa74f9e8d52804",
+    "revision": "247d8f5d0cd8b70b8d427010a5561069",
     "url": "/VAWSR/index.html"
   }
 ];
