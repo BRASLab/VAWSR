@@ -20,8 +20,8 @@ class Websocket extends React.Component {
     const { context } = this.state
     this.socket = socket('wss://vawsr.mino.tw/ws')
     on_connect()
-
     this.processor = context.createScriptProcessor(8192, 1, 1)
+    this.sampleRate = context.sampleRate
     this.processor.connect(context.destination)
     this.input = context.createMediaStreamSource(stream)
     this.input.connect(this.processor)
@@ -65,7 +65,12 @@ class Websocket extends React.Component {
 
   microphoneProcess = e => {
     var left = e.inputBuffer.getChannelData(0)
-    var left16 = this.convertoFloat32ToInt16(left)
+    var left16
+    if (this.sampleRate > 44100) {
+      left16 = this.downsampleBuffer(left, this.sampleRate, 44100)
+    } else {
+      left16 = this.convertoFloat32ToInt16(left)
+    }
     this.socket.emit('binary_data', left16)
   }
 
