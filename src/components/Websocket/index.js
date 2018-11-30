@@ -65,32 +65,18 @@ class Websocket extends React.Component {
 
   microphoneProcess = e => {
     var left = e.inputBuffer.getChannelData(0)
-    var left16 = this.floatTo16BitPCM(left)
+    var left16 = this.convertoFloat32ToInt16(left)
     this.socket.emit('binary_data', left16)
   }
 
-  floatTo16BitPCM = buffer => {
-    let result = new Int16Array(buffer.length)
-    let offsetResult = 0
-    let offsetBuffer = 0
-    while (offsetResult < result.length) {
-      let nextOffsetBuffer = offsetResult + 1
-      let accum = 0,
-        count = 0
-      for (
-        let i = offsetBuffer;
-        i < nextOffsetBuffer && i < buffer.length;
-        i++
-      ) {
-        accum += buffer[i]
-        count++
-      }
+  convertoFloat32ToInt16 = buffer => {
+    var l = buffer.length
+    var buf = new Int16Array(l)
 
-      result[offsetResult] = Math.min(1, accum / count) * 0x7fff
-      offsetResult++
-      offsetBuffer = nextOffsetBuffer
+    while (l--) {
+      buf[l] = buffer[l] * 0x7fff //convert to 16 bit
     }
-    return result.buffer
+    return buf.buffer
   }
 
   downsampleBuffer = (buffer, sampleRate, outSampleRate) => {
