@@ -1,4 +1,7 @@
-const LoginManager = (state = { logined: false }, action) => {
+const LoginManager = (
+  state = { logined: false, hasivector: false },
+  action
+) => {
   switch (action.type) {
     case 'LOGIN':
       return {
@@ -9,7 +12,7 @@ const LoginManager = (state = { logined: false }, action) => {
         hasivector: action.hasivector
       }
     case 'LOGOUT':
-      return { logined: false }
+      return { logined: false, hasivector: false }
 
     default:
       return state

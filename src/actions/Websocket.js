@@ -28,3 +28,9 @@ export const stop_stream = (google, kaldi, proba, { text, url }) => {
     url
   }
 }
+
+export const clear_responses = () => {
+  return {
+    type: 'CLEAR_RESPONSES'
+  }
+}

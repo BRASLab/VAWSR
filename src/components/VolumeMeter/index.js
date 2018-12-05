@@ -87,7 +87,7 @@ class VolumeMeter extends React.Component {
       }
     } else {
       if (!record) return
-      if (stopTimeout > 10) {
+      if (stopTimeout > 20) {
         this.setState({ stopTimeout: 0 })
         stopRecord()
       } else {

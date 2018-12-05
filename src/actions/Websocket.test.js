@@ -42,4 +42,8 @@ describe('actions Websocket', () => {
       expectedAction
     )
   })
+
+  it('should create an action to Websocket CLEAR_RESPONSES', () => {
+    expect(Websocket.clear_responses()).toEqual({ type: 'CLEAR_RESPONSES' })
+  })
 })

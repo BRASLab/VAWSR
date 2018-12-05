@@ -14,28 +14,43 @@ const TextArea = styled.div`
 `
 
 class AppTextArea extends Component {
-  componentDidMount() {
-    this.scrollToBottom()
+  constructor(props) {
+    super(props)
+    const { responses } = this.props
+    this.responses = [...responses]
+    this.responsesItem = responses.map((res, i) => (
+      <Response key={i} {...res} />
+    ))
   }
+
+  scrollToBottom() {
+    this.el.scrollTop = this.el.scrollTopMax + 100
+  }
+
   componentDidUpdate() {
     this.scrollToBottom()
-  }
-  scrollToBottom() {
-    this.el.scrollTop = this.el.scrollTopMax + 1000
   }
 
   render() {
     const { google, kaldi, responses } = this.props
-    let responseItem = []
-    for (let i = 0; i < responses.length; i++) {
-      responseItem.push(<Response key={i} {...responses[i]} />)
+    let responsesItem = this.responsesItem
+    if (responses.length > this.responses.length) {
+      for (let i = this.responses.length; i < responses.length; i++) {
+        responsesItem.push(<Response key={i} {...responses[i]} />)
+      }
+      this.responses = [...responses]
+    } else if (responses < this.responses) {
+      this.responses = []
+      this.responsesItem = []
+      responsesItem = []
     }
+
     return (
       <TextArea
         innerRef={el => {
           this.el = el
         }}>
-        {responseItem}
+        {responsesItem}
         <Response google={google} kaldi={kaldi} proba={0} text={''} url={''} />
       </TextArea>
     )

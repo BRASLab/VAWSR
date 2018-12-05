@@ -2,7 +2,7 @@ import LoginManager from './LoginManager'
 
 describe('LoginManager reducer', () => {
   it('should retrun inital state', () => {
-    const initialState = { logined: false }
+    const initialState = { logined: false, hasivector: false }
     expect(LoginManager(undefined, {})).toEqual(initialState)
   })
 
@@ -22,8 +22,9 @@ describe('LoginManager reducer', () => {
   })
 
   it('should handle LOGOUT', () => {
-    expect(LoginManager(undefined, { type: 'LOGOUT' })).toEqual({
-      logined: false
+    expect(LoginManager({ logined: true }, { type: 'LOGOUT' })).toEqual({
+      logined: false,
+      hasivector: false
     })
   })
 })

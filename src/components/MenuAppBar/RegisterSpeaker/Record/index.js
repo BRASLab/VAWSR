@@ -31,6 +31,7 @@ class Record extends React.Component {
     this.recorder = new MediaStreamRecorder(stream)
     this.recorder.mimeType = 'audio/wav'
     this.recorder.audioChannels = 1
+    this.recorder.bufferSize = 2048
     this.recorder.ondataavailable = blob => {
       this.props.handleURL(blob)
     }

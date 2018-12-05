@@ -18,6 +18,7 @@ import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props
 import { login, logout } from '../../actions/LoginManager'
 import RegisterSpeaker from './RegisterSpeaker'
 import axios from 'axios'
+import { clear_responses } from '../../actions/Websocket'
 
 axios.defaults.withCredentials = true
 
@@ -51,7 +52,8 @@ const styles = theme => ({
 
 class PrimarySearchAppBar extends React.Component {
   state = {
-    anchorEl: null
+    anchorEl: null,
+    anchorEl2: null
   }
 
   constructor(props) {
@@ -73,8 +75,12 @@ class PrimarySearchAppBar extends React.Component {
     this.setState({ anchorEl: event.currentTarget })
   }
 
+  handleProfileMenuOpen2 = event => {
+    this.setState({ anchorEl2: event.currentTarget })
+  }
+
   handleMenuClose = () => {
-    this.setState({ anchorEl: null })
+    this.setState({ anchorEl: null, anchorEl2: null })
   }
 
   handleLogin = res => {
@@ -120,10 +126,17 @@ class PrimarySearchAppBar extends React.Component {
     this.handleMenuClose()
   }
 
+  handleClearResponses = () => {
+    const { clear_responses } = this.props
+    clear_responses()
+    this.handleMenuClose()
+  }
+
   render() {
-    const { anchorEl } = this.state
+    const { anchorEl, anchorEl2 } = this.state
     const { classes, logined, stream, user } = this.props
     const isMenuOpen = Boolean(anchorEl)
+    const isMenuOpen2 = Boolean(anchorEl2)
 
     const renderMenu = (
       <Menu
@@ -148,13 +161,26 @@ class PrimarySearchAppBar extends React.Component {
         {logined && <RegisterSpeaker callback={this.handleMenuClose} />}
       </Menu>
     )
+    const renderMenu2 = (
+      <Menu
+        anchorEl={anchorEl2}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={isMenuOpen2}
+        onClose={this.handleMenuClose}>
+        <MenuItem onClick={this.handleClearResponses}>清理訊息</MenuItem>
+      </Menu>
+    )
 
     return (
       <div className={classes.root}>
         <AppBar position="static">
           <Toolbar>
             <IconButton
+              aria-owns={isMenuOpen2 ? 'material-appbar' : null}
+              aria-haspopup="true"
               className={classes.menuButton}
+              onClick={this.handleProfileMenuOpen2}
               color="inherit"
               aria-label="Open drawer">
               <MenuIcon />
@@ -206,6 +232,7 @@ class PrimarySearchAppBar extends React.Component {
           </Toolbar>
         </AppBar>
         {stream && renderMenu}
+        {renderMenu2}
       </div>
     )
   }
@@ -218,6 +245,7 @@ PrimarySearchAppBar.propTypes = {
   hostname: PropTypes.string.isRequired,
   login: PropTypes.func.isRequired,
   logout: PropTypes.func.isRequired,
+  clear_responses: PropTypes.func.isRequired,
   stream: PropTypes.object
 }
 
@@ -234,7 +262,8 @@ const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       login,
-      logout
+      logout,
+      clear_responses
     },
     dispatch
   )

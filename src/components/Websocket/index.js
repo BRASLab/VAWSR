@@ -20,7 +20,7 @@ class Websocket extends React.Component {
     const { context } = this.state
     this.socket = socket('wss://vawsr.mino.tw/ws')
     on_connect()
-    this.processor = context.createScriptProcessor(8192, 1, 1)
+    this.processor = context.createScriptProcessor(2048, 1, 1)
     this.sampleRate = context.sampleRate
     this.processor.connect(context.destination)
     this.input = context.createMediaStreamSource(stream)

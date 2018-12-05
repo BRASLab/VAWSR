@@ -59,4 +59,15 @@ describe('Websocket reducer', () => {
       })
     ).toEqual(expectedState)
   })
+
+  it('should handle CLEAR_RESPONSES', () => {
+    expect(
+      Websocket(
+        { ...initialState, responses: [1, 2] },
+        {
+          type: 'CLEAR_RESPONSES'
+        }
+      )
+    ).toEqual(initialState)
+  })
 })

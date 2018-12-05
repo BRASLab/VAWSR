@@ -31,6 +31,11 @@ const Websocket = (
         google: '',
         kaldi: ''
       }
+    case 'CLEAR_RESPONSES':
+      return {
+        ...state,
+        responses: []
+      }
     default:
       return state
   }
