@@ -20,7 +20,7 @@ self.__precacheManifest = [
     "url": "/VAWSR/static/css/1.a4e5c581.chunk.css"
   },
   {
-    "revision": "24858e6af49dfe6d69646c5ea6ae0861",
+    "revision": "130a2b70581fc04a767d5052a2466c36",
     "url": "/VAWSR/index.html"
   }
 ];
