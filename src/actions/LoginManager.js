@@ -4,12 +4,21 @@ export const login = user => {
     fbid: user.fbid,
     email: user.email,
     name: user.name,
-    hasivector: user.hasivector
+    hasivector: user.hasivector,
+    processing: user.processing
   }
 }
 
 export const logout = () => {
   return {
     type: 'LOGOUT'
+  }
+}
+
+export const update_status = (hasivector, processing) => {
+  return {
+    type: 'UPDATE_STATUS',
+    hasivector,
+    processing
   }
 }

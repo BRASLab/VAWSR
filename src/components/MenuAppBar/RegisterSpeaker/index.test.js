@@ -28,10 +28,11 @@ describe('component <RegisterSpeaker />', () => {
   let mock = new MockAdapter(axios)
   let resume = jest.fn()
   let suspend = jest.fn()
+  let update_status = jest.fn()
 
   it('renders without crashing', () => {
     initialState = {
-      LoginManager: { hasivector: false },
+      LoginManager: { hasivector: false, processing: false },
       Host: { hostname: hostname }
     }
     store = mockStore(initialState)
@@ -49,11 +50,13 @@ describe('component <RegisterSpeaker />', () => {
     app = shallow(
       <RegisterSpeaker
         hasivector={true}
+        processing={false}
         hostname={hostname}
         classes={classes}
         callback={callback}
         suspend={suspend}
         resume={resume}
+        update_status={update_status}
       />
     )
     expect(app.find('p').text()).toBe('重新註冊語者')
@@ -64,11 +67,13 @@ describe('component <RegisterSpeaker />', () => {
     let app2 = shallow(
       <RegisterSpeaker
         hasivector={true}
+        processing={false}
         hostname={hostname}
         classes={classes}
         callback={callback2}
         suspend={suspend}
         resume={resume}
+        update_status={update_status}
       />
     )
     app2.instance().handleNext()
@@ -116,21 +121,24 @@ describe('component <RegisterSpeaker />', () => {
   })
 
   it('should handle registerspeaker failed', async () => {
-    mock.onPost(`${hostname}/registerspeaker`).reply(401, {})
+    let message = '語者註冊失敗'
+    mock.onPost(`${hostname}/registerspeaker`).reply(400, { message })
     app.instance().handleNext()
     await promiseDelay(100)
-    expect(toast.error).toBeCalledWith('語者註冊失敗，請重新傳送一遍')
+    expect(toast.error).toBeCalledWith(message)
   })
 
   it('should handle registerspeaker successed', async () => {
-    mock.onPost(`${hostname}/registerspeaker`).reply(200, {})
+    let message = '語者註冊成功'
+    mock.onPost(`${hostname}/registerspeaker`).reply(200, { message })
     app.instance().handleNext()
     await promiseDelay(100)
-    expect(toast.success).toBeCalledWith('語者註冊成功')
+    expect(toast.success).toBeCalledWith(message)
   })
 
   it('should be called', () => {
     expect(suspend).toBeCalled()
     expect(resume).toBeCalled()
+    expect(update_status).toBeCalled()
   })
 })

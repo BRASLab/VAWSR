@@ -21,4 +21,13 @@ describe('actions LoginManager', () => {
     }
     expect(LoginManager.logout()).toEqual(expectedAction)
   })
+
+  it('should create an action to UPDATE_STATUS', () => {
+    const expectedAction = {
+      type: 'UPDATE_STATUS',
+      hasivector: false,
+      processing: false
+    }
+    expect(LoginManager.update_status(false, false)).toEqual(expectedAction)
+  })
 })

@@ -24,6 +24,7 @@ import { bindActionCreators } from 'redux'
 
 import Record from './Record'
 import { resume, suspend } from '../../../actions/Recorder'
+import { update_status } from '../../../actions/LoginManager'
 
 const styles = theme => ({
   dots: {
@@ -89,7 +90,7 @@ export class RegisterSpeaker extends React.Component {
     if (this.state.step < 9) {
       this.setState(prevState => ({ step: prevState.step + 1 }))
     } else {
-      const { hostname } = this.props
+      const { hostname, update_status } = this.props
       this.setState({ loading: true })
       var fd = new FormData()
       // eslint-disable-next-line
@@ -102,12 +103,14 @@ export class RegisterSpeaker extends React.Component {
             'Content-Type': 'multipart/form-data'
           }
         })
-        .then(() => {
-          toast.success('語者註冊成功')
+        .then(res => res.data)
+        .then(({ message }) => {
+          toast.success(message)
+          update_status(false, true)
           this.handleClose()
         })
-        .catch(() => {
-          toast.error('語者註冊失敗，請重新傳送一遍')
+        .catch(err => {
+          toast.error(err.response.data.message)
           this.setState({ loading: false })
         })
     }
@@ -145,11 +148,11 @@ export class RegisterSpeaker extends React.Component {
   }
 
   render() {
-    const { classes, hasivector } = this.props
+    const { classes, hasivector, processing } = this.props
     const { loading, step, sentences, audioBlob, open } = this.state
     return (
       <div>
-        <MenuItem onClick={this.handleClick}>
+        <MenuItem onClick={this.handleClick} disabled={processing}>
           <p>{hasivector ? '重新註冊語者' : '語者設定'}</p>
         </MenuItem>
         <Dialog
@@ -227,17 +230,20 @@ RegisterSpeaker.propTypes = {
   hasivector: PropTypes.bool.isRequired,
   hostname: PropTypes.string.isRequired,
   resume: PropTypes.func.isRequired,
-  suspend: PropTypes.func.isRequired
+  processing: PropTypes.bool.isRequired,
+  suspend: PropTypes.func.isRequired,
+  update_status: PropTypes.func.isRequired
 }
 const mapStateToProps = state => {
   return {
+    processing: state.LoginManager.processing,
     hasivector: state.LoginManager.hasivector,
     hostname: state.Host.hostname
   }
 }
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ resume, suspend }, dispatch)
+  return bindActionCreators({ resume, suspend, update_status }, dispatch)
 }
 
 export default connect(

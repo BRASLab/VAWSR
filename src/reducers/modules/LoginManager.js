@@ -1,5 +1,5 @@
 const LoginManager = (
-  state = { logined: false, hasivector: false },
+  state = { logined: false, hasivector: false, processing: false },
   action
 ) => {
   switch (action.type) {
@@ -9,10 +9,18 @@ const LoginManager = (
         email: action.email,
         name: action.name,
         logined: true,
+        processing: action.processing,
         hasivector: action.hasivector
       }
     case 'LOGOUT':
-      return { logined: false, hasivector: false }
+      return { logined: false, hasivector: false, processing: false }
+
+    case 'UPDATE_STATUS':
+      return {
+        ...state,
+        processing: action.processing ? action.processing : state.processing,
+        hasivector: action.hasivector ? action.hasivector : state.hasivector
+      }
 
     default:
       return state
